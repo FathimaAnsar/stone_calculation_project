@@ -1,0 +1,16 @@
+body{
+    background-color: #222222;
+}
+.App {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    height: 100vh;
+}
+
+.Form, .Display {
+    flex-grow: 1;
+    min-width: 300px; /* Minimum width for each component */
+    padding: 20px;
+    box-sizing: border-box; /* Includes padding in the component's total width */
+}
