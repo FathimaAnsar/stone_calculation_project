@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/FathimaAnsar/stone_calculation_project/issues"
   },
-  "homepage": "https://github.com/FathimaAnsar/stone_calculation_project#readme"
+  "homepage": "https://github.com/FathimaAnsar/stone_calculation_project#readme",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.5.2"
+  }
 }
