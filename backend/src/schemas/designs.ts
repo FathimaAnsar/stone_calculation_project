@@ -9,7 +9,7 @@ interface StoneRequirement {
 // Define the main interface for the Design document
 interface Design {
     _id?: mongoose.Types.ObjectId; // Optional because MongoDB auto-generates _id
-    design_id: number;
+    design_id: string;
     type: string;
     stones_amnt: StoneRequirement[]; // Array of StoneRequirement objects
     silver_quantity: number;
@@ -17,7 +17,7 @@ interface Design {
 
 // Define the schema for the Design document
 const designSchema = new mongoose.Schema<Design>({
-    design_id: { type: Number, required: true },
+    design_id: { type: String, required: true },
     type: { type: String, required: true },
     stones_amnt: [{
         stone_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Stone' }, // Reference to a Stone document
