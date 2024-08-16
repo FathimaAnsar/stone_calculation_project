@@ -7,7 +7,7 @@ stoneRouter.get("/get", async (req: Request, res: Response) => {
     try {
         const stone = await StoneModel.find({});
         if (!stone || stone.length === 0) {
-            return res.status(404).json({ message: "No designs found" });
+            return res.status(404).json({ message: "No Stones found" });
         }
         res.status(200).json(stone);
     } catch (err) {
