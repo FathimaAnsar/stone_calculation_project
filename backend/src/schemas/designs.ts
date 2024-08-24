@@ -2,28 +2,32 @@ import mongoose from "mongoose";
 
 // Define an interface for the structure of each item in the stones_amnt array
 interface StoneRequirement {
-    stone_id: mongoose.Schema.Types.ObjectId; // Reference to a Stone document
-    quantity: number; // Quantity of the stone required
+    type?: string; // Optional type of stone
+    size?: string; // Optional size of the stones
+    quantity?: string; // Optional quantity of the stone required
 }
 
 // Define the main interface for the Design document
 interface Design {
     _id?: mongoose.Types.ObjectId; // Optional because MongoDB auto-generates _id
-    design_id: number;
+    design_id: string;
+    set_id:string;
     type: string;
     stones_amnt: StoneRequirement[]; // Array of StoneRequirement objects
-    silver_quantity: number;
+    silver_quantity: string;
 }
 
 // Define the schema for the Design document
 const designSchema = new mongoose.Schema<Design>({
-    design_id: { type: Number, required: true },
+    design_id: { type: String, required: true },
+    set_id: { type: String, required: true },
     type: { type: String, required: true },
     stones_amnt: [{
-        stone_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Stone' }, // Reference to a Stone document
-        quantity: { type: Number, required: true } // Quantity of the stone required
+        type: { type: String }, // Optional type of stone
+        size: { type: String },
+        quantity: { type: String } // Optional quantity of the stone required
     }],
-    silver_quantity: { type: Number, required: true },
+    silver_quantity: { type: String, required: true },
 });
 
 // Create the Mongoose model for Designs
