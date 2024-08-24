@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import designRouter from "./src/routes/design.routes"
 import setRouter from "./src/routes/set.routes"
+
 require('dotenv').config()
 
 const app = express();
@@ -20,5 +21,6 @@ mongoose
     .then(() => console.log('MongoDB connected'))
     .catch((err: any) => console.error('MongoDB connection failed:', err));
 app.use("/design", designRouter);
-app.use("/stone", setRouter)
+app.use("/set", setRouter)
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
