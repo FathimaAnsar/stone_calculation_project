@@ -22,5 +22,5 @@ mongoose
     .catch((err: any) => console.error('MongoDB connection failed:', err));
 app.use("/design", designRouter);
 app.use("/set", setRouter)
-
+app.get("/", (req, res) => {res.json("welcome")})
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
