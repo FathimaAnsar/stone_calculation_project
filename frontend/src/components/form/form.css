@@ -1,0 +1,37 @@
+.box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.container {
+    background-color: #808080; /* Grey color */
+    border-radius: 10px; /* Rounded corners */
+    padding: 40px; /* Space inside the box */
+    margin: 10px 150px; /* Space outside the box */
+    max-width: 100%; /* to prevent it from shrinking too much */
+}
+.select{
+    padding: 10px;
+    font-size:20px;
+}
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.custom-input{
+    width: 62px;
+    height: 39px;
+}
+.input{
+    margin-left: 5px;
+}
+.button{
+    font-size: 30px;
+    width: 55px;
+    height: 39px;
+}
+
+
