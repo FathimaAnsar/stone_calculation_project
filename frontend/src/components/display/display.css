@@ -1,0 +1,19 @@
+.Display table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.Display th, .Display td {
+    border: 1px solid #555;
+    padding: 10px;
+    text-align: left;
+}
+
+.Display th {
+    background-color: #333;
+    color: aliceblue;
+}
+
+.Display td {
+    background-color: #444;
+}

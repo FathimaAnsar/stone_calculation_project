@@ -1,0 +1,68 @@
+/* dark-theme.css */
+
+/* General dark theme styles */
+.dark-segment {
+    background-color: #222 !important;
+    color: #fff !important;
+    padding: 20px !important;
+}
+
+.dark-table {
+    background-color: #333;
+    color: #fff;
+    border-color: #555;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.dark-table th, .dark-table td {
+    border-color: #555 !important;
+    padding: 8px;
+}
+
+.dark-table th {
+    background-color: #444;
+    color: #fff;
+}
+
+.dark-table td {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Horizontal scrolling */
+.table-wrapper {
+    overflow-x: auto;
+    margin: -20px;
+    padding: 20px;
+    white-space: nowrap; /* Prevent table from collapsing */
+}
+
+/* Disable responsive collapsing */
+@media (max-width: 368px) {
+    .dark-table, .dark-table tbody, .dark-table tr, .dark-table td {
+        display: table;
+
+    }
+
+    .dark-table {
+        table-layout: fixed; /* Prevent columns from getting too narrow */
+    }
+}
+/* register.css */
+.table-wrapper {
+    overflow-x: auto;
+    position: relative;
+}
+
+.fixed-column {
+    position: relative;
+    right: 0;
+    background-color: #1b1c1d;
+    z-index: 2;
+}
+
+.dark-table .delete-column {
+    position: relative;
+    z-index: 1;
+}

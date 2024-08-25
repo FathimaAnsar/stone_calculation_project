@@ -1,37 +1,46 @@
-.box{
+/* form.css */
+
+.box {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 8px;
+    color: #fff;
+}
+
+.center {
+    margin-bottom: 15px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-.container {
-    background-color: #808080; /* Grey color */
-    border-radius: 10px; /* Rounded corners */
-    padding: 40px; /* Space inside the box */
-    margin: 10px 150px; /* Space outside the box */
-    max-width: 100%; /* to prevent it from shrinking too much */
-}
-.select{
-    padding: 10px;
-    font-size:20px;
-}
-.center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-.custom-input{
-    width: 62px;
-    height: 39px;
-}
-.input{
-    margin-left: 5px;
-}
-.button{
-    font-size: 30px;
-    width: 55px;
-    height: 39px;
+    gap: 10px;
 }
 
+.ui.selection.dropdown,
+.ui.selection.dropdown .menu {
+    background-color: #444;
+    border-color: #555;
+    color: #fff;
+}
 
+.ui.selection.dropdown .menu .item {
+    color: #fff;
+}
+
+.ui.selection.dropdown .menu .item:hover {
+    background-color: #555;
+}
+
+.ui.input > input {
+    background-color: #444 !important;
+    color: #fff !important;
+    border: 1px solid #555 !important;
+}
+
+.button {
+    background-color: #666 !important;
+    color: #fff !important;
+}
+
+.button:disabled {
+    background-color: #444 !important;
+    cursor: not-allowed;
+}
