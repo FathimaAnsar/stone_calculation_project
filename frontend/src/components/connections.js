@@ -2,7 +2,7 @@ import axios from 'axios';
 
 class ConnectionManager {
     constructor() {
-        this.EndpointHost = 'https://stoneapis-fathimaansars-projects.vercel.app/';
+        this.EndpointHost = 'https://stoneapis-fathimaansars-projects.vercel.app';
     }
 
 
