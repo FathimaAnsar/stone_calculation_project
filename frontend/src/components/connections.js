@@ -5,6 +5,8 @@ class ConnectionManager {
         this.EndpointHost = 'https://stoneapis-fathimaansars-projects.vercel.app/';
     }
 
+
+
     async postRequest(apiEndPoint, data) {
         document.body.style.cursor = 'wait';
         try {
