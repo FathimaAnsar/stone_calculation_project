@@ -3,18 +3,21 @@ import axios from 'axios';
 class ConnectionManager {
     constructor() {
         this.EndpointHost = 'https://stoneapis-fathimaansars-projects.vercel.app';
+
+        // Create an Axios instance with default settings
+        this.axiosInstance = axios.create({
+            baseURL: this.EndpointHost,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true, // Include credentials (cookies, etc.) with requests
+        });
     }
-
-
 
     async postRequest(apiEndPoint, data) {
         document.body.style.cursor = 'wait';
         try {
-            const response = await axios.post(this.EndpointHost + apiEndPoint, data, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            const response = await this.axiosInstance.post(apiEndPoint, data);
             return response.data;
         } catch (error) {
             console.error('Error:', error);
@@ -27,11 +30,7 @@ class ConnectionManager {
     async putRequest(apiEndPoint, data) {
         document.body.style.cursor = 'wait';
         try {
-            const response = await axios.put(this.EndpointHost + apiEndPoint, data, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            const response = await this.axiosInstance.put(apiEndPoint, data);
             return response.data;
         } catch (error) {
             console.error('Error:', error);
@@ -44,8 +43,7 @@ class ConnectionManager {
     async deleteRequest(apiEndPoint) {
         document.body.style.cursor = 'wait';
         try {
-            const response = await axios.delete(this.EndpointHost + apiEndPoint, {
-            });
+            const response = await this.axiosInstance.delete(apiEndPoint);
             return response.data;
         } catch (error) {
             console.error('Error:', error);
@@ -58,8 +56,7 @@ class ConnectionManager {
     async getRequest(apiEndPoint) {
         document.body.style.cursor = 'wait';
         try {
-            const response = await axios.get(this.EndpointHost + apiEndPoint, {
-            });
+            const response = await this.axiosInstance.get(apiEndPoint);
             return response.data;
         } catch (error) {
             console.error('Error:', error);
@@ -68,7 +65,6 @@ class ConnectionManager {
             document.body.style.cursor = 'default';
         }
     }
-
     // Stones APIs
     async addStone(stone) {
         return await this.postRequest('/stone/add', stone);
