@@ -88,7 +88,7 @@ class ConnectionManager {
 
     // Design APIs
     async addDesign(design) {
-        return await this.postRequest('/design/add', design);
+        return await this.postRequest('design/add', design);
     }
 
     async updateDesign(id, design) {
@@ -100,7 +100,7 @@ class ConnectionManager {
     }
 
     async getAllDesigns() {
-        return await this.getRequest('/design/get');
+        return await this.getRequest('design/get');
     }
 
     async getDesignById(id) {
