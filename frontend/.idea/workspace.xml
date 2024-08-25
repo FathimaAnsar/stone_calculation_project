@@ -4,25 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2818dce8-1b81-4615-bd4f-f4782cdffa79" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/App.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/display/display.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/display/display.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/form/form.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/form/form.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/stone_cal/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/stone_cal/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/stone_cal/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/stone_cal/jsconfig.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/stone_cal/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/stone_cal/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/stone_cal/public/vite.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/stone_cal/src/assets/preact.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/stone_cal/src/index.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/stone_cal/src/style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/stone_cal/vite.config.js" beforeDir="false" />
+    <list default="true" id="95ff3b1a-f564-486a-a5f0-dfebe9f44241" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/frontend.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/favicon.ico" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/logo192.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/logo512.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/robots.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/display/display.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/display/display.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/display/display.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/display/display.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/form/form.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/form/form.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/form/form.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/form/form.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +42,7 @@
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 0
 }</component>
-  <component name="ProjectId" id="2k92RYkulDEzoi9N027kMO9Orw6" />
+  <component name="ProjectId" id="2kjnhgNwhtqfNDfyXkNLzmiKmtP" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -52,6 +51,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "W:/stone_cal/stone_calculation_project/frontend",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -63,7 +63,6 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="W:\stone_cal\stone_calculation_project\frontend\src\components\display" />
       <recent name="W:\stone_cal\stone_calculation_project\frontend\src\components\form" />
     </key>
   </component>
@@ -77,13 +76,15 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="2818dce8-1b81-4615-bd4f-f4782cdffa79" name="Changes" comment="" />
-      <created>1722681466550</created>
+      <changelist id="95ff3b1a-f564-486a-a5f0-dfebe9f44241" name="Changes" comment="" />
+      <created>1723805973998</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1722681466550</updated>
-      <workItem from="1722681471399" duration="677000" />
-      <workItem from="1722682327373" duration="21576000" />
+      <updated>1723805973998</updated>
+      <workItem from="1723805975888" duration="112000" />
+      <workItem from="1723806109585" duration="989000" />
+      <workItem from="1723807127002" duration="14978000" />
+      <workItem from="1724498706014" duration="2600000" />
     </task>
     <servers />
   </component>

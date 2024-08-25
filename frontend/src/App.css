@@ -1,16 +1,31 @@
-body{
-    background-color: #222222;
+body {
+  background-color: #222222;
+  color: aliceblue;
+  margin: 0;
+  font-family: Arial, sans-serif;
 }
+
 .App {
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
-    height: 100vh;
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  height: 100vh;
+}
+
+.Register {
+  padding: 20px;
+  background-color: #333; /* Optional: background color for the register section */
+}
+
+.MainContent {
+  display: flex;
+  flex-grow: 1; /* Take up remaining space */
+  gap: 20px; /* Space between Form and Display */
 }
 
 .Form, .Display {
-    flex-grow: 1;
-    min-width: 300px; /* Minimum width for each component */
-    padding: 20px;
-    box-sizing: border-box; /* Includes padding in the component's total width */
+  flex: 1; /* Ensure Form and Display take up equal space */
+  min-width: 300px; /* Minimum width for each component */
+  padding: 20px;
+  box-sizing: border-box; /* Includes padding in the component's total width */
+  background-color: #444; /* Optional: background color for better visibility */
 }
