@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 const MONGODB_URI: string = process.env.MONGODB_URI!;
 app.use(express.json());
 app.use(cors({
-    origin: 'http://localhost:3001', // Replace with your frontend's origin
+    origin: 'https://stonefrontend-fathimaansars-projects.vercel.app/', // Replace with your frontend's origin
     methods:['GET','POST','DELETE','PUT'],
     credentials: true
 }));
