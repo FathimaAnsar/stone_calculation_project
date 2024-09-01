@@ -65,46 +65,46 @@ class ConnectionManager {
             document.body.style.cursor = 'default';
         }
     }
-    // Stones APIs
-    async addStone(stone) {
-        return await this.postRequest('/stone/add', stone);
+    // sets APIs
+    async addSet(set) {
+        return await this.postRequest('set/add', set);
     }
 
-    async updateStone(id, stone) {
-        return await this.putRequest(`/stone/update/${id}`, stone);
+    async updateSet(id, set) {
+        return await this.putRequest(`set/update/${id}`, set);
     }
 
-    async deleteStone(id) {
-        return await this.deleteRequest(`/stone/delete/${id}`);
+    async deleteSet(id) {
+        return await this.deleteRequest(`set/delete/${id}`);
     }
 
-    async getAllStones() {
-        return await this.getRequest('/stone/get');
+    async getAllSets() {
+        return await this.getRequest('set/get');
     }
 
-    async getStoneById(id) {
-        return await this.getRequest(`/stone/get/${id}`);
+    async getSetById(id) {
+        return await this.getRequest(`set/get/${id}`);
     }
 
     // Design APIs
     async addDesign(design) {
-        return await this.postRequest('/design/add', design);
+        return await this.postRequest('design/add', design);
     }
 
     async updateDesign(id, design) {
-        return await this.putRequest(`/design/update/${id}`, design);
+        return await this.putRequest(`design/update/${id}`, design);
     }
 
     async deleteDesign(id) {
-        return await this.deleteRequest(`/design/delete/${id}`);
+        return await this.deleteRequest(`design/delete/${id}`);
     }
 
     async getAllDesigns() {
-        return await this.getRequest('/design/get');
+        return await this.getRequest('design/get');
     }
 
     async getDesignById(id) {
-        return await this.getRequest(`/design/get/${id}`);
+        return await this.getRequest(`design/get/${id}`);
     }
 }
 
