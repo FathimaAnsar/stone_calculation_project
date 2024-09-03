@@ -7,8 +7,10 @@ const DesignRegisterTable = () => {
     const [data, setData] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newDesign, setNewDesign] = useState({
+        catCode:'',
         type: '',
         designCode: '',
+        setCode: '',
         silver: '',
         stones: [{ type: '', size: '', quantity: '', id: 1 }]
     });
@@ -28,12 +30,13 @@ const DesignRegisterTable = () => {
     useEffect(() => {
         fetchDesigns();
     }, []);
-
     const fillData = [...data];
     while (fillData.length < 3) {
         fillData.push({
+            cat_code:'',
             type: '',
             design_id: '',
+            set_id: '',
             silver_quantity: '',
             stones_amnt: Array(10).fill({ type: '', size: '', quantity: '' })
         });
@@ -72,7 +75,9 @@ const DesignRegisterTable = () => {
     const addDesign = async () => {
         try {
             const designToAdd = {
+                cat_code: newDesign.catCode,
                 design_id: newDesign.designCode,
+                set_id:newDesign.setCode,
                 type: newDesign.type,
                 stones_amnt: newDesign.stones.map(stone => ({
                     type: stone.type,
@@ -106,16 +111,16 @@ const DesignRegisterTable = () => {
 
     return (
         <Segment className="dark-segment">
-            <Header as="h1" textAlign="center" style={{ color: '#fff' }}>
+            <Header as="h1" textAlign="center" style={{color: '#fff'}}>
                 Design Register
             </Header>
             <Button
                 icon
                 labelPosition='left'
                 onClick={openModal}
-                style={{ marginBottom: '10px' }}
+                style={{marginBottom: '10px'}}
             >
-                <Icon name='plus' />
+                <Icon name='plus'/>
                 Add Design
             </Button>
             <div className="table-wrapper">
@@ -123,6 +128,7 @@ const DesignRegisterTable = () => {
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell rowSpan="2">Type</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan="2">Category</Table.HeaderCell> {/* Added Category column */}
                             <Table.HeaderCell rowSpan="2">Design Code</Table.HeaderCell>
                             <Table.HeaderCell rowSpan="2">Silver</Table.HeaderCell>
                             {[...Array(10)].map((_, index) => (
@@ -146,20 +152,27 @@ const DesignRegisterTable = () => {
                         {fillData.map((item, rowIndex) => (
                             <Table.Row key={rowIndex}>
                                 <Table.Cell data-label="Type">{item.type || ''}</Table.Cell>
-                                <Table.Cell data-label="Design Code">{item.design_id || ''}</Table.Cell>
+                                <Table.Cell
+                                    data-label="Category">{item.cat_code || ''}</Table.Cell> {/* Category cell */}
+                                <Table.Cell data-label="Design Code">
+                                    {`${item.design_id || ''}-${item.set_id || ''}`}
+                                </Table.Cell>
                                 <Table.Cell data-label="Silver">{item.silver_quantity || ''}</Table.Cell>
                                 {item.stones_amnt.map((stone, stoneIndex) => (
                                     <React.Fragment key={stoneIndex}>
-                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Type`} className="stone-column">{stone.type || ''}</Table.Cell>
-                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Size`} className="stone-column">{stone.size || ''}</Table.Cell>
-                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Quantity`} className="stone-column">{stone.quantity || ''}</Table.Cell>
+                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Type`}
+                                                    className="stone-column">{stone.type || ''}</Table.Cell>
+                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Size`}
+                                                    className="stone-column">{stone.size || ''}</Table.Cell>
+                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Quantity`}
+                                                    className="stone-column">{stone.quantity || ''}</Table.Cell>
                                     </React.Fragment>
                                 ))}
                                 <Table.Cell className="edit-column fixed-column">
-                                    <Icon name='edit' onClick={() => handleEdit(rowIndex)} />
+                                    <Icon name='edit' onClick={() => handleEdit(rowIndex)}/>
                                 </Table.Cell>
                                 <Table.Cell className="delete-column">
-                                    <Icon name='delete' onClick={() => handleDelete(item._id)} />
+                                    <Icon name='delete' onClick={() => handleDelete(item._id)}/>
                                 </Table.Cell>
                             </Table.Row>
                         ))}
@@ -167,10 +180,17 @@ const DesignRegisterTable = () => {
                 </Table>
             </div>
 
+
             <Modal open={isModalOpen} onClose={closeModal}>
                 <Modal.Header>Add New Design</Modal.Header>
                 <Modal.Content>
                     <Form>
+                        <Form.Input
+                            label='Category'
+                            name='category'
+                            value={newDesign.catCode}
+                            onChange={handleInputChange}
+                        />
                         <Form.Input
                             label='Type'
                             name='type'
@@ -181,6 +201,12 @@ const DesignRegisterTable = () => {
                             label='Design Code'
                             name='designCode'
                             value={newDesign.designCode}
+                            onChange={handleInputChange}
+                        />
+                        <Form.Input
+                            label='Set Code'
+                            name='setCode'
+                            value={newDesign.setCode}
                             onChange={handleInputChange}
                         />
                         <Form.Input
@@ -198,7 +224,7 @@ const DesignRegisterTable = () => {
                                     selection
                                     options={stonesOptions}
                                     value={stone.type}
-                                    onChange={(e, { value }) => handleStonesChange(index, 'type', value)}
+                                    onChange={(e, {value}) => handleStonesChange(index, 'type', value)}
                                     closeOnChange={true} // Close dropdown on selection
                                 />
                                 <Form.Input
@@ -215,7 +241,7 @@ const DesignRegisterTable = () => {
                         ))}
                         {newDesign.stones.length < 10 && (
                             <Button type='button' onClick={addStoneField} icon>
-                                <Icon name='plus' /> Add Stone
+                                <Icon name='plus'/> Add Stone
                             </Button>
                         )}
                         <Button type='submit' onClick={addDesign}>Submit</Button>

@@ -10,7 +10,11 @@ interface StoneRequirement {
 // Define the main interface for the Design document
 interface Design {
     _id?: mongoose.Types.ObjectId; // Optional because MongoDB auto-generates _id
+<<<<<<< HEAD
     cat_id: string;
+=======
+    cat_code:string;
+>>>>>>> register
     design_id: string;
     set_id:string;
     type: string;
@@ -20,7 +24,11 @@ interface Design {
 
 // Define the schema for the Design document
 const designSchema = new mongoose.Schema<Design>({
+<<<<<<< HEAD
     cat_id: { type: String, required: true },
+=======
+    cat_code: { type: String, required: true },
+>>>>>>> register
     design_id: { type: String, required: true },
     set_id: { type: String, required: true },
     type: { type: String, required: true },
