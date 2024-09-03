@@ -9,6 +9,7 @@ class ConnectionManager {
             baseURL: this.EndpointHost,
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
             },
             withCredentials: true, // Include credentials (cookies, etc.) with requests
         });
@@ -20,7 +21,7 @@ class ConnectionManager {
             const response = await this.axiosInstance.post(apiEndPoint, data);
             return response.data;
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error during POST request:', error);
             return null;
         } finally {
             document.body.style.cursor = 'default';
@@ -33,7 +34,7 @@ class ConnectionManager {
             const response = await this.axiosInstance.put(apiEndPoint, data);
             return response.data;
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error during PUT request:', error);
             return null;
         } finally {
             document.body.style.cursor = 'default';
@@ -46,7 +47,7 @@ class ConnectionManager {
             const response = await this.axiosInstance.delete(apiEndPoint);
             return response.data;
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error during DELETE request:', error);
             return null;
         } finally {
             document.body.style.cursor = 'default';
@@ -59,14 +60,14 @@ class ConnectionManager {
             const response = await this.axiosInstance.get(apiEndPoint);
             return response.data;
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error during GET request:', error);
             return null;
         } finally {
             document.body.style.cursor = 'default';
         }
     }
 
-    // sets APIs
+    // Set APIs
     async addSet(set) {
         return await this.postRequest('set/add', set);
     }
