@@ -2,7 +2,7 @@ import axios from 'axios';
 
 class ConnectionManager {
     constructor() {
-        this.EndpointHost = 'https://stoneapis-fathimaansars-projects.vercel.app';
+        this.EndpointHost = 'stoneapis-git-register-fathimaansars-projects.vercel.app';
 
         // Create an Axios instance with default settings
         this.axiosInstance = axios.create({

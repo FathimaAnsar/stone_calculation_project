@@ -7,8 +7,10 @@ const DesignRegisterTable = () => {
     const [data, setData] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newDesign, setNewDesign] = useState({
+        catCode:'',
         type: '',
         designCode: '',
+        setCode: '',
         silver: '',
         stones: [{ type: '', size: '', quantity: '', id: 1 }]
     });
