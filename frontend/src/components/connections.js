@@ -10,9 +10,8 @@ class ConnectionManager {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-            },
-            withCredentials: true, // Include credentials (cookies, etc.) with requests
-        });
+            }
+            });
     }
 
     async postRequest(apiEndPoint, data) {
