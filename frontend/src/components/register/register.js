@@ -187,7 +187,7 @@ const DesignRegisterTable = () => {
                     <Form>
                         <Form.Input
                             label='Category'
-                            name='category'
+                            name='catCode'
                             value={newDesign.catCode}
                             onChange={handleInputChange}
                         />
