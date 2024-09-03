@@ -30,12 +30,13 @@ const DesignRegisterTable = () => {
     useEffect(() => {
         fetchDesigns();
     }, []);
-
     const fillData = [...data];
     while (fillData.length < 3) {
         fillData.push({
+            cat_code:'',
             type: '',
             design_id: '',
+            set_id: '',
             silver_quantity: '',
             stones_amnt: Array(10).fill({ type: '', size: '', quantity: '' })
         });
@@ -74,7 +75,9 @@ const DesignRegisterTable = () => {
     const addDesign = async () => {
         try {
             const designToAdd = {
+                cat_code: newDesign.catCode,
                 design_id: newDesign.designCode,
+                set_id:newDesign.setCode,
                 type: newDesign.type,
                 stones_amnt: newDesign.stones.map(stone => ({
                     type: stone.type,
@@ -150,8 +153,10 @@ const DesignRegisterTable = () => {
                             <Table.Row key={rowIndex}>
                                 <Table.Cell data-label="Type">{item.type || ''}</Table.Cell>
                                 <Table.Cell
-                                    data-label="Category">{item.category || ''}</Table.Cell> {/* Category cell */}
-                                <Table.Cell data-label="Design Code">{item.design_id || ''}</Table.Cell>
+                                    data-label="Category">{item.cat_code || ''}</Table.Cell> {/* Category cell */}
+                                <Table.Cell data-label="Design Code">
+                                    {`${item.design_id || ''}-${item.set_id || ''}`}
+                                </Table.Cell>
                                 <Table.Cell data-label="Silver">{item.silver_quantity || ''}</Table.Cell>
                                 {item.stones_amnt.map((stone, stoneIndex) => (
                                     <React.Fragment key={stoneIndex}>
@@ -181,6 +186,12 @@ const DesignRegisterTable = () => {
                 <Modal.Content>
                     <Form>
                         <Form.Input
+                            label='Category'
+                            name='category'
+                            value={newDesign.catCode}
+                            onChange={handleInputChange}
+                        />
+                        <Form.Input
                             label='Type'
                             name='type'
                             value={newDesign.type}
@@ -190,6 +201,12 @@ const DesignRegisterTable = () => {
                             label='Design Code'
                             name='designCode'
                             value={newDesign.designCode}
+                            onChange={handleInputChange}
+                        />
+                        <Form.Input
+                            label='Set Code'
+                            name='setCode'
+                            value={newDesign.setCode}
                             onChange={handleInputChange}
                         />
                         <Form.Input
