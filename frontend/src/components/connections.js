@@ -9,7 +9,8 @@ class ConnectionManager {
             baseURL: this.EndpointHost,
             headers: {
                 'Content-Type': 'application/json',
-            }
+            },
+            withCredentials: true  // Ensure cookies/credentials are included in requests
         });
 
         // Add interceptors for cursor change
