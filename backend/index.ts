@@ -12,8 +12,7 @@ const MONGODB_URI: string = process.env.MONGODB_URI!;
 app.use(express.json());
 app.use(cors({
     origin: 'https://stonefrontend-fathimaansars-projects.vercel.app/',
-    methods:['GET','POST','DELETE','PUT'],
-    credentials: true
+    methods:['GET','POST','DELETE','PUT']
 }));
 // Connect to MongoDB
 mongoose
