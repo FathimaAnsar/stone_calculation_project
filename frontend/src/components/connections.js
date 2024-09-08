@@ -9,61 +9,55 @@ class ConnectionManager {
             baseURL: this.EndpointHost,
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json',
             }
+        });
+
+        // Add interceptors for cursor change
+        this.axiosInstance.interceptors.request.use((config) => {
+            document.body.style.cursor = 'wait';
+            return config;
+        }, (error) => {
+            document.body.style.cursor = 'default';
+            return Promise.reject(error);
+        });
+
+        this.axiosInstance.interceptors.response.use((response) => {
+            document.body.style.cursor = 'default';
+            return response;
+        }, (error) => {
+            document.body.style.cursor = 'default';
+            return Promise.reject(error);
+        });
+    }
+
+    async sendRequest(method, apiEndPoint, data = null) {
+        try {
+            const response = await this.axiosInstance({
+                method,
+                url: apiEndPoint,
+                data
             });
+            return response.data;
+        } catch (error) {
+            console.error(`Error during ${method.toUpperCase()} request:`, error?.response?.data || error.message);
+            return null;
+        }
     }
 
     async postRequest(apiEndPoint, data) {
-        document.body.style.cursor = 'wait';
-        try {
-            const response = await this.axiosInstance.post(apiEndPoint, data);
-            return response.data;
-        } catch (error) {
-            console.error('Error during POST request:', error);
-            return null;
-        } finally {
-            document.body.style.cursor = 'default';
-        }
+        return this.sendRequest('post', apiEndPoint, data);
     }
 
     async putRequest(apiEndPoint, data) {
-        document.body.style.cursor = 'wait';
-        try {
-            const response = await this.axiosInstance.put(apiEndPoint, data);
-            return response.data;
-        } catch (error) {
-            console.error('Error during PUT request:', error);
-            return null;
-        } finally {
-            document.body.style.cursor = 'default';
-        }
+        return this.sendRequest('put', apiEndPoint, data);
     }
 
     async deleteRequest(apiEndPoint) {
-        document.body.style.cursor = 'wait';
-        try {
-            const response = await this.axiosInstance.delete(apiEndPoint);
-            return response.data;
-        } catch (error) {
-            console.error('Error during DELETE request:', error);
-            return null;
-        } finally {
-            document.body.style.cursor = 'default';
-        }
+        return this.sendRequest('delete', apiEndPoint);
     }
 
     async getRequest(apiEndPoint) {
-        document.body.style.cursor = 'wait';
-        try {
-            const response = await this.axiosInstance.get(apiEndPoint);
-            return response.data;
-        } catch (error) {
-            console.error('Error during GET request:', error);
-            return null;
-        } finally {
-            document.body.style.cursor = 'default';
-        }
+        return this.sendRequest('get', apiEndPoint);
     }
 
     // Set APIs
