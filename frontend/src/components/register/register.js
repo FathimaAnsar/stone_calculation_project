@@ -51,8 +51,26 @@ const DesignRegisterTable = () => {
         { key: 'sapphire', value: 'Sapphire', text: 'Sapphire' },
         { key: 'moonstone', value: 'Moonstone', text: 'Moonstone' }
     ];
+    // const designCodes = [
+    //     { key: 'FGCMSRS', value: 'FGCMSRS', text: 'FGCMSRS' },
+    //     { key: 'FGCMSPS', value: 'FGCMSPS', text: 'FGCMSPS' },
+    //     { key: 'FGCMSES', value: 'FGCMSES', text: 'FGCMSES' },
+    //     { key: 'CSR/P/E', value: 'CSR/P/E', text: 'CSR/P/E' },
+    //
+    // ];
 
-    const openModal = () => setIsModalOpen(true);
+    const openModal = () => {
+        setNewDesign({
+            catCode:'',
+            type: '',
+            designCode: '',
+            setCode: '',
+            silver: '',
+            stones: [{ type: '', size: '', quantity: '', id: 1 }]
+        });
+        setEditingRowIndex(null);  // Set to null to indicate it's a new design
+        setIsModalOpen(true);
+    };
     const closeModal = () => setIsModalOpen(false);
 
     const handleInputChange = (e, { name, value }) => {
@@ -72,12 +90,12 @@ const DesignRegisterTable = () => {
         }
     };
 
-    const addDesign = async () => {
+    const addOrUpdateDesign = async () => {
         try {
-            const designToAdd = {
+            const designToSave = {
                 cat_code: newDesign.catCode,
                 design_id: newDesign.designCode,
-                set_id:newDesign.setCode,
+                set_id: newDesign.setCode,
                 type: newDesign.type,
                 stones_amnt: newDesign.stones.map(stone => ({
                     type: stone.type,
@@ -87,18 +105,41 @@ const DesignRegisterTable = () => {
                 silver_quantity: newDesign.silver
             };
 
-            await connectionManager.addDesign(designToAdd);
-            fetchDesigns(); // Reload data from the database after adding a design
+            if (editingRowIndex !== null) {
+                // Update existing design
+                await connectionManager.updateDesign(data[editingRowIndex]._id, designToSave);
+            } else {
+                // Add new design
+                await connectionManager.addDesign(designToSave);
+            }
+
+            fetchDesigns(); // Reload data from the database after adding or editing a design
             closeModal();
         } catch (error) {
-            console.error('Error adding design', error);
+            console.error('Error adding/updating design', error);
         }
     };
 
+
     const handleEdit = (index) => {
-        setEditingRowIndex(index);
-        // Implement edit logic
+        const selectedDesign = data[index];
+        setNewDesign({
+            catCode: selectedDesign.cat_code || '',
+            type: selectedDesign.type || '',
+            designCode: selectedDesign.design_id || '',
+            setCode: selectedDesign.set_id || '',
+            silver: selectedDesign.silver_quantity || '',
+            stones: selectedDesign.stones_amnt.map((stone, i) => ({
+                type: stone.type || '',
+                size: stone.size || '',
+                quantity: stone.quantity || '',
+                id: i + 1
+            }))
+        });
+        setEditingRowIndex(index);  // Set index to know we are editing
+        openModal();  // Open the modal
     };
+
 
     const handleDelete = async (id) => {
         try {
@@ -244,7 +285,7 @@ const DesignRegisterTable = () => {
                                 <Icon name='plus'/> Add Stone
                             </Button>
                         )}
-                        <Button type='submit' onClick={addDesign}>Submit</Button>
+                        <Button type='submit' onClick={addOrUpdateDesign}>{editingRowIndex !== null ? 'Update Design' : 'Submit'}</Button>
                     </Form>
                 </Modal.Content>
             </Modal>
