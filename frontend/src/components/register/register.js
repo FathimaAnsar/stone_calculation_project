@@ -116,9 +116,30 @@ const DesignRegisterTable = () => {
     };
 
     const handleEdit = (index) => {
-        setEditingRowIndex(index); // Set the editing row index
-        openModal(); // Open the modal
+        const selectedDesign = data[index];
+
+        // Update the design state with the selected design's data
+        setNewDesign({
+            catCode: selectedDesign.cat_code || '',
+            type: selectedDesign.type || '',
+            designCode: selectedDesign.design_id || '',
+            setCode: selectedDesign.set_id || '',
+            silver: selectedDesign.silver_quantity || '',
+            stones: selectedDesign.stones_amnt.map((stone, i) => ({
+                type: stone.type || '',
+                size: stone.size || '',
+                quantity: stone.quantity || '',
+                id: i + 1
+            }))
+        });
+
+        // Ensure modal opens after state update
+        setTimeout(() => {
+            setEditingRowIndex(index);  // Set the editing row index
+            setIsModalOpen(true);  // Open the modal after state update
+        }, 0); // Delay to allow the state to update
     };
+
 
     const handleDelete = async (id) => {
         try {
