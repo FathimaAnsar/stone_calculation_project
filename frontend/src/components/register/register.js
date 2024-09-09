@@ -15,6 +15,7 @@ const DesignRegisterTable = () => {
         stones: [{ type: '', size: '', quantity: '', id: 1 }]
     });
     const [editingRowIndex, setEditingRowIndex] = useState(null);
+    const [editDesign, setEditDesign] = useState(null);
     const connectionManager = new ConnectionManager();
 
     useEffect(() => {
@@ -54,16 +55,34 @@ const DesignRegisterTable = () => {
     ];
 
     const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setNewDesign({
+            catCode: '',
+            type: '',
+            designCode: '',
+            setCode: '',
+            silver: '',
+            stones: [{ type: '', size: '', quantity: '', id: 1 }]
+        });
+    };
 
     const handleInputChange = (e, { name, value }) => {
-        setNewDesign({ ...newDesign, [name]: value });
+        if (editingRowIndex === null) {
+            setNewDesign({ ...newDesign, [name]: value });
+        } else {
+            setEditDesign({ ...editDesign, [name]: value });
+        }
     };
 
     const handleStonesChange = (index, field, value) => {
-        const updatedStones = [...newDesign.stones];
+        const updatedStones = editingRowIndex === null ? [...newDesign.stones] : [...editDesign.stones_amnt];
         updatedStones[index] = { ...updatedStones[index], [field]: value };
-        setNewDesign({ ...newDesign, stones: updatedStones });
+        if (editingRowIndex === null) {
+            setNewDesign({ ...newDesign, stones: updatedStones });
+        } else {
+            setEditDesign({ ...editDesign, stones_amnt: updatedStones });
+        }
     };
 
     const addStoneField = () => {
@@ -98,25 +117,25 @@ const DesignRegisterTable = () => {
 
     const handleEdit = (index) => {
         setEditingRowIndex(index);
+        setEditDesign({ ...data[index] });
     };
 
-    const handleRowChange = (index, field, value) => {
+    const handleRowChange = (field, value) => {
         const updatedData = [...data];
-        updatedData[index] = { ...updatedData[index], [field]: value };
+        updatedData[editingRowIndex] = { ...updatedData[editingRowIndex], [field]: value };
         setData(updatedData);
     };
 
-    const handleStoneChange = (rowIndex, stoneIndex, field, value) => {
-        const updatedData = [...data];
-        const updatedStones = [...updatedData[rowIndex].stones_amnt];
-        updatedStones[stoneIndex] = { ...updatedStones[stoneIndex], [field]: value };
-        updatedData[rowIndex] = { ...updatedData[rowIndex], stones_amnt: updatedStones };
-        setData(updatedData);
-    };
-
-    const saveChanges = async (index) => {
+    const saveChanges = async () => {
         try {
-            const updatedDesign = data[index];
+            const updatedDesign = {
+                ...editDesign,
+                stones_amnt: editDesign.stones_amnt.map(stone => ({
+                    type: stone.type,
+                    size: stone.size,
+                    quantity: stone.quantity
+                }))
+            };
             await connectionManager.updateDesign(updatedDesign._id, updatedDesign);
             setEditingRowIndex(null); // Stop editing mode after save
             fetchDesigns(); // Refresh the data
@@ -184,8 +203,8 @@ const DesignRegisterTable = () => {
                                 <Table.Cell data-label="Type">
                                     {editingRowIndex === rowIndex ? (
                                         <Form.Input
-                                            value={item.type}
-                                            onChange={(e) => handleRowChange(rowIndex, 'type', e.target.value)}
+                                            value={editDesign.type}
+                                            onChange={(e) => handleRowChange('type', e.target.value)}
                                         />
                                     ) : (
                                         item.type
@@ -194,8 +213,8 @@ const DesignRegisterTable = () => {
                                 <Table.Cell data-label="Category">
                                     {editingRowIndex === rowIndex ? (
                                         <Form.Input
-                                            value={item.cat_code}
-                                            onChange={(e) => handleRowChange(rowIndex, 'cat_code', e.target.value)}
+                                            value={editDesign.cat_code}
+                                            onChange={(e) => handleRowChange('cat_code', e.target.value)}
                                         />
                                     ) : (
                                         item.cat_code
@@ -204,8 +223,8 @@ const DesignRegisterTable = () => {
                                 <Table.Cell data-label="Design Code">
                                     {editingRowIndex === rowIndex ? (
                                         <Form.Input
-                                            value={item.design_id}
-                                            onChange={(e) => handleRowChange(rowIndex, 'design_id', e.target.value)}
+                                            value={editDesign.design_id}
+                                            onChange={(e) => handleRowChange('design_id', e.target.value)}
                                         />
                                     ) : (
                                         item.design_id
@@ -214,8 +233,8 @@ const DesignRegisterTable = () => {
                                 <Table.Cell data-label="Silver">
                                     {editingRowIndex === rowIndex ? (
                                         <Form.Input
-                                            value={item.silver_quantity}
-                                            onChange={(e) => handleRowChange(rowIndex, 'silver_quantity', e.target.value)}
+                                            value={editDesign.silver_quantity}
+                                            onChange={(e) => handleRowChange('silver_quantity', e.target.value)}
                                         />
                                     ) : (
                                         item.silver_quantity
@@ -231,9 +250,8 @@ const DesignRegisterTable = () => {
                                                     search
                                                     selection
                                                     options={stonesOptions}
-                                                    value={stone.type}
-                                                    onChange={(e, { value }) => handleStoneChange(rowIndex, stoneIndex, 'type', value)}
-                                                    closeOnChange={true}
+                                                    value={editDesign.stones_amnt[stoneIndex].type}
+                                                    onChange={(e, { value }) => handleStonesChange(stoneIndex, 'type', value)}
                                                 />
                                             ) : (
                                                 stone.type
@@ -242,8 +260,8 @@ const DesignRegisterTable = () => {
                                         <Table.Cell data-label={`Stone ${stoneIndex + 1} Size`} className="stone-column">
                                             {editingRowIndex === rowIndex ? (
                                                 <Form.Input
-                                                    value={stone.size}
-                                                    onChange={(e) => handleStoneChange(rowIndex, stoneIndex, 'size', e.target.value)}
+                                                    value={editDesign.stones_amnt[stoneIndex].size}
+                                                    onChange={(e) => handleStonesChange(stoneIndex, 'size', e.target.value)}
                                                 />
                                             ) : (
                                                 stone.size
@@ -252,8 +270,8 @@ const DesignRegisterTable = () => {
                                         <Table.Cell data-label={`Stone ${stoneIndex + 1} Quantity`} className="stone-column">
                                             {editingRowIndex === rowIndex ? (
                                                 <Form.Input
-                                                    value={stone.quantity}
-                                                    onChange={(e) => handleStoneChange(rowIndex, stoneIndex, 'quantity', e.target.value)}
+                                                    value={editDesign.stones_amnt[stoneIndex].quantity}
+                                                    onChange={(e) => handleStonesChange(stoneIndex, 'quantity', e.target.value)}
                                                 />
                                             ) : (
                                                 stone.quantity
@@ -261,18 +279,15 @@ const DesignRegisterTable = () => {
                                         </Table.Cell>
                                     </React.Fragment>
                                 ))}
-                                <Table.Cell className="edit-column fixed-column">
+                                <Table.Cell className="edit-column">
                                     {editingRowIndex === rowIndex ? (
-                                        <>
-                                            <Button onClick={() => saveChanges(rowIndex)} color="green">Save</Button>
-                                            <Button onClick={cancelEdit} color="red">Cancel</Button>
-                                        </>
+                                        <Button icon="save" color="green" onClick={saveChanges} />
                                     ) : (
-                                        <Icon name='edit' onClick={() => handleEdit(rowIndex)} />
+                                        <Button icon="edit" onClick={() => handleEdit(rowIndex)} />
                                     )}
                                 </Table.Cell>
                                 <Table.Cell className="delete-column">
-                                    <Icon name='delete' onClick={() => handleDelete(item._id)} />
+                                    <Button icon="delete" color="red" onClick={() => handleDelete(item._id)} />
                                 </Table.Cell>
                             </Table.Row>
                         ))}
@@ -280,72 +295,97 @@ const DesignRegisterTable = () => {
                 </Table>
             </div>
 
-            <Modal open={isModalOpen} onClose={closeModal}>
+            <Modal open={isModalOpen} onClose={closeModal} size="large">
                 <Modal.Header>Add New Design</Modal.Header>
                 <Modal.Content>
                     <Form>
-                        <Form.Input
-                            label='Category'
-                            name='catCode'
-                            value={newDesign.catCode}
-                            onChange={handleInputChange}
-                        />
-                        <Form.Input
-                            label='Type'
-                            name='type'
-                            value={newDesign.type}
-                            onChange={handleInputChange}
-                        />
-                        <Form.Input
-                            label='Design Code'
-                            name='designCode'
-                            value={newDesign.designCode}
-                            onChange={handleInputChange}
-                        />
-                        <Form.Input
-                            label='Set Code'
-                            name='setCode'
-                            value={newDesign.setCode}
-                            onChange={handleInputChange}
-                        />
-                        <Form.Input
-                            label='Silver'
-                            name='silver'
-                            value={newDesign.silver}
-                            onChange={handleInputChange}
-                        />
+                        <Form.Field>
+                            <label>Category Code</label>
+                            <Form.Input
+                                name="catCode"
+                                value={newDesign.catCode}
+                                onChange={handleInputChange}
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Design Code</label>
+                            <Form.Input
+                                name="designCode"
+                                value={newDesign.designCode}
+                                onChange={handleInputChange}
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Set Code</label>
+                            <Form.Input
+                                name="setCode"
+                                value={newDesign.setCode}
+                                onChange={handleInputChange}
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Type</label>
+                            <Form.Input
+                                name="type"
+                                value={newDesign.type}
+                                onChange={handleInputChange}
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Silver Quantity</label>
+                            <Form.Input
+                                name="silver"
+                                value={newDesign.silver}
+                                onChange={handleInputChange}
+                            />
+                        </Form.Field>
                         {newDesign.stones.map((stone, index) => (
-                            <div key={index}>
-                                <Dropdown
-                                    placeholder="Select Stones"
-                                    fluid
-                                    search
-                                    selection
-                                    options={stonesOptions}
-                                    value={stone.type}
-                                    onChange={(e, { value }) => handleStonesChange(index, 'type', value)}
-                                    closeOnChange={true} // Close dropdown on selection
-                                />
-                                <Form.Input
-                                    label={`Stone ${index + 1} Size`}
-                                    value={stone.size}
-                                    onChange={(e) => handleStonesChange(index, 'size', e.target.value)}
-                                />
-                                <Form.Input
-                                    label={`Stone ${index + 1} Quantity`}
-                                    value={stone.quantity}
-                                    onChange={(e) => handleStonesChange(index, 'quantity', e.target.value)}
-                                />
-                            </div>
+                            <Segment key={stone.id}>
+                                <Form.Field>
+                                    <label>Stone {index + 1} Type</label>
+                                    <Dropdown
+                                        placeholder="Select Stone Type"
+                                        fluid
+                                        search
+                                        selection
+                                        options={stonesOptions}
+                                        value={stone.type}
+                                        onChange={(e, { value }) => handleStonesChange(index, 'type', value)}
+                                    />
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Stone {index + 1} Size</label>
+                                    <Form.Input
+                                        value={stone.size}
+                                        onChange={(e) => handleStonesChange(index, 'size', e.target.value)}
+                                    />
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Stone {index + 1} Quantity</label>
+                                    <Form.Input
+                                        value={stone.quantity}
+                                        onChange={(e) => handleStonesChange(index, 'quantity', e.target.value)}
+                                    />
+                                </Form.Field>
+                            </Segment>
                         ))}
-                        {newDesign.stones.length < 10 && (
-                            <Button type='button' onClick={addStoneField} icon>
-                                <Icon name='plus' /> Add Stone
-                            </Button>
-                        )}
-                        <Button type='submit' onClick={addDesign}>Submit</Button>
+                        <Button onClick={addStoneField} icon="plus" color="blue">
+                            Add Stone
+                        </Button>
                     </Form>
                 </Modal.Content>
+                <Modal.Actions>
+                    <Button onClick={closeModal} color="black">
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={addDesign}
+                        content="Add Design"
+                        labelPosition="right"
+                        icon="checkmark"
+                        color="green"
+                    />
+                </Modal.Actions>
             </Modal>
         </Segment>
     );
