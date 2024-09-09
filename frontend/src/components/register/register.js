@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Segment, Header, Button, Form, Icon } from 'semantic-ui-react';
+import { Table, Segment, Header, Button, Form, Icon, Modal, Dropdown } from 'semantic-ui-react';
 import ConnectionManager from '../connections';
 import './register.css';
 
@@ -31,17 +31,73 @@ const DesignRegisterTable = () => {
         }
     };
 
-    const handleEdit = (index) => {
-        setEditingRowIndex(index);
+    const fillData = [...data];
+    while (fillData.length < 3) {
+        fillData.push({
+            cat_code: '',
+            type: '',
+            design_id: '',
+            set_id: '',
+            silver_quantity: '',
+            stones_amnt: Array(10).fill({ type: '', size: '', quantity: '' })
+        });
+    }
+
+    const stonesOptions = [
+        { key: 'blue-topaz', value: 'Blue Topaz', text: 'Blue Topaz' },
+        { key: 'white-topaz', value: 'White Topaz', text: 'White Topaz' },
+        { key: 'chrome-diopside', value: 'Chrome Diopside', text: 'Chrome Diopside' },
+        { key: 'garnet', value: 'Garnet', text: 'Garnet' },
+        { key: 'peridot', value: 'Peridot', text: 'Peridot' },
+        { key: 'sapphire', value: 'Sapphire', text: 'Sapphire' },
+        { key: 'moonstone', value: 'Moonstone', text: 'Moonstone' }
+    ];
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+
+    const handleInputChange = (e, { name, value }) => {
+        setNewDesign({ ...newDesign, [name]: value });
     };
 
-    const handleDelete = async (id) => {
-        try {
-            await connectionManager.deleteDesign(id);
-            fetchDesigns(); // Refresh the data after deletion
-        } catch (error) {
-            console.error('Error deleting design', error);
+    const handleStonesChange = (index, field, value) => {
+        const updatedStones = [...newDesign.stones];
+        updatedStones[index] = { ...updatedStones[index], [field]: value };
+        setNewDesign({ ...newDesign, stones: updatedStones });
+    };
+
+    const addStoneField = () => {
+        if (newDesign.stones.length < 10) {
+            const newStone = { type: '', size: '', quantity: '', id: newDesign.stones.length + 1 };
+            setNewDesign({ ...newDesign, stones: [...newDesign.stones, newStone] });
         }
+    };
+
+    const addDesign = async () => {
+        try {
+            const designToAdd = {
+                cat_code: newDesign.catCode,
+                design_id: newDesign.designCode,
+                set_id: newDesign.setCode,
+                type: newDesign.type,
+                stones_amnt: newDesign.stones.map(stone => ({
+                    type: stone.type,
+                    size: stone.size,
+                    quantity: stone.quantity
+                })),
+                silver_quantity: newDesign.silver
+            };
+
+            await connectionManager.addDesign(designToAdd);
+            fetchDesigns(); // Reload data from the database after adding a design
+            closeModal();
+        } catch (error) {
+            console.error('Error adding design', error);
+        }
+    };
+
+    const handleEdit = (index) => {
+        setEditingRowIndex(index);
     };
 
     const handleRowChange = (index, field, value) => {
@@ -74,44 +130,13 @@ const DesignRegisterTable = () => {
         fetchDesigns(); // Reload original data to cancel changes
     };
 
-    const addNewRow = () => {
-        setNewDesign({
-            catCode: '',
-            type: '',
-            designCode: '',
-            setCode: '',
-            silver: '',
-            stones: [{ type: '', size: '', quantity: '', id: 1 }]
-        });
-        setIsModalOpen(true);
-    };
-
-    const saveNewRow = async () => {
+    const handleDelete = async (id) => {
         try {
-            await connectionManager.addDesign(newDesign);
-            setNewDesign({
-                catCode: '',
-                type: '',
-                designCode: '',
-                setCode: '',
-                silver: '',
-                stones: [{ type: '', size: '', quantity: '', id: 1 }]
-            });
-            setIsModalOpen(false);
-            fetchDesigns(); // Reload the table with the new design
+            await connectionManager.deleteDesign(id);
+            setData(data.filter(item => item._id !== id));
         } catch (error) {
-            console.error('Error adding design', error);
+            console.error('Error deleting design', error);
         }
-    };
-
-    const handleNewDesignChange = (field, value) => {
-        setNewDesign({ ...newDesign, [field]: value });
-    };
-
-    const handleNewStoneChange = (index, field, value) => {
-        const updatedStones = [...newDesign.stones];
-        updatedStones[index] = { ...updatedStones[index], [field]: value };
-        setNewDesign({ ...newDesign, stones: updatedStones });
     };
 
     return (
@@ -122,7 +147,7 @@ const DesignRegisterTable = () => {
             <Button
                 icon
                 labelPosition='left'
-                onClick={addNewRow}
+                onClick={openModal}
                 style={{ marginBottom: '10px' }}
             >
                 <Icon name='plus' />
@@ -154,7 +179,7 @@ const DesignRegisterTable = () => {
                     </Table.Header>
 
                     <Table.Body>
-                        {data.map((item, rowIndex) => (
+                        {fillData.map((item, rowIndex) => (
                             <Table.Row key={rowIndex}>
                                 <Table.Cell data-label="Type">
                                     {editingRowIndex === rowIndex ? (
@@ -200,9 +225,15 @@ const DesignRegisterTable = () => {
                                     <React.Fragment key={stoneIndex}>
                                         <Table.Cell data-label={`Stone ${stoneIndex + 1} Type`} className="stone-column">
                                             {editingRowIndex === rowIndex ? (
-                                                <Form.Input
+                                                <Dropdown
+                                                    placeholder="Select Stones"
+                                                    fluid
+                                                    search
+                                                    selection
+                                                    options={stonesOptions}
                                                     value={stone.type}
-                                                    onChange={(e) => handleStoneChange(rowIndex, stoneIndex, 'type', e.target.value)}
+                                                    onChange={(e, { value }) => handleStoneChange(rowIndex, stoneIndex, 'type', value)}
+                                                    closeOnChange={true}
                                                 />
                                             ) : (
                                                 stone.type
@@ -232,15 +263,15 @@ const DesignRegisterTable = () => {
                                 ))}
                                 <Table.Cell className="edit-column fixed-column">
                                     {editingRowIndex === rowIndex ? (
-                                        <div>
-                                            <Button onClick={() => saveChanges(rowIndex)}>Save</Button>
-                                            <Button onClick={cancelEdit}>Cancel</Button>
-                                        </div>
+                                        <>
+                                            <Button onClick={() => saveChanges(rowIndex)} color="green">Save</Button>
+                                            <Button onClick={cancelEdit} color="red">Cancel</Button>
+                                        </>
                                     ) : (
                                         <Icon name='edit' onClick={() => handleEdit(rowIndex)} />
                                     )}
                                 </Table.Cell>
-                                <Table.Cell className="delete-column fixed-column">
+                                <Table.Cell className="delete-column">
                                     <Icon name='delete' onClick={() => handleDelete(item._id)} />
                                 </Table.Cell>
                             </Table.Row>
@@ -248,6 +279,74 @@ const DesignRegisterTable = () => {
                     </Table.Body>
                 </Table>
             </div>
+
+            <Modal open={isModalOpen} onClose={closeModal}>
+                <Modal.Header>Add New Design</Modal.Header>
+                <Modal.Content>
+                    <Form>
+                        <Form.Input
+                            label='Category'
+                            name='catCode'
+                            value={newDesign.catCode}
+                            onChange={handleInputChange}
+                        />
+                        <Form.Input
+                            label='Type'
+                            name='type'
+                            value={newDesign.type}
+                            onChange={handleInputChange}
+                        />
+                        <Form.Input
+                            label='Design Code'
+                            name='designCode'
+                            value={newDesign.designCode}
+                            onChange={handleInputChange}
+                        />
+                        <Form.Input
+                            label='Set Code'
+                            name='setCode'
+                            value={newDesign.setCode}
+                            onChange={handleInputChange}
+                        />
+                        <Form.Input
+                            label='Silver'
+                            name='silver'
+                            value={newDesign.silver}
+                            onChange={handleInputChange}
+                        />
+                        {newDesign.stones.map((stone, index) => (
+                            <div key={index}>
+                                <Dropdown
+                                    placeholder="Select Stones"
+                                    fluid
+                                    search
+                                    selection
+                                    options={stonesOptions}
+                                    value={stone.type}
+                                    onChange={(e, { value }) => handleStonesChange(index, 'type', value)}
+                                    closeOnChange={true} // Close dropdown on selection
+                                />
+                                <Form.Input
+                                    label={`Stone ${index + 1} Size`}
+                                    value={stone.size}
+                                    onChange={(e) => handleStonesChange(index, 'size', e.target.value)}
+                                />
+                                <Form.Input
+                                    label={`Stone ${index + 1} Quantity`}
+                                    value={stone.quantity}
+                                    onChange={(e) => handleStonesChange(index, 'quantity', e.target.value)}
+                                />
+                            </div>
+                        ))}
+                        {newDesign.stones.length < 10 && (
+                            <Button type='button' onClick={addStoneField} icon>
+                                <Icon name='plus' /> Add Stone
+                            </Button>
+                        )}
+                        <Button type='submit' onClick={addDesign}>Submit</Button>
+                    </Form>
+                </Modal.Content>
+            </Modal>
         </Segment>
     );
 };
