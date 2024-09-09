@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Segment, Header, Button, Form, Icon } from 'semantic-ui-react';
+import { Table, Segment, Header, Button, Icon, Form } from 'semantic-ui-react';
 import ConnectionManager from '../connections';
 import './register.css';
 
@@ -23,6 +23,15 @@ const DesignRegisterTable = () => {
         fetchDesigns();
     }, []);
 
+    const handleDelete = async (id) => {
+        try {
+            await connectionManager.deleteDesign(id); // Assuming deleteDesign is a method in your ConnectionManager
+            fetchDesigns(); // Reload the data after deletion
+        } catch (error) {
+            console.error('Error deleting design', error);
+        }
+    };
+
     // Track changes in the row being edited
     const handleRowChange = (index, field, value) => {
         const updatedData = [...data];
@@ -35,33 +44,21 @@ const DesignRegisterTable = () => {
         setNewRowData({ ...newRowData, [field]: value });
     };
 
-    // Save changes to the edited row
-    const saveChanges = async (index) => {
-        try {
-            const updatedDesign = data[index];
-            await connectionManager.updateDesign(updatedDesign._id, updatedDesign);
-            setEditingRowIndex(null); // Stop editing mode after save
-            fetchDesigns(); // Refresh the data
-        } catch (error) {
-            console.error('Error saving changes', error);
-        }
-    };
-
-    // Cancel edit mode without saving
-    const cancelEdit = () => {
-        setEditingRowIndex(null);
-        fetchDesigns(); // Reload original data to cancel changes
+    // Track changes for individual stones in the new row
+    const handleNewStoneChange = (stoneIndex, field, value) => {
+        const updatedStones = [...newRowData.stones];
+        updatedStones[stoneIndex] = { ...updatedStones[stoneIndex], [field]: value };
+        setNewRowData({ ...newRowData, stones: updatedStones });
     };
 
     // Add a new editable row to the table
     const addNewRow = () => {
         setNewRowData({
-            catCode: '',
             type: '',
+            catCode: '',
             designCode: '',
-            setCode: '',
             silver: '',
-            stones: [{ type: '', size: '', quantity: '', id: 1 }],
+            stones: [...Array(10)].map(() => ({ type: '', size: '', quantity: '' })),
         });
     };
 
@@ -78,87 +75,75 @@ const DesignRegisterTable = () => {
 
     return (
         <Segment className="dark-segment">
-            <Header as="h1" textAlign="center" style={{color: '#fff'}}>
+            <Header as="h1" textAlign="center" style={{ color: '#fff' }}>
                 Design Register
             </Header>
-
-            <Button icon labelPosition='left' onClick={addNewRow} style={{ marginBottom: '10px' }}>
-                <Icon name='plus'/> Add Design
+            <Button
+                icon
+                labelPosition='left'
+                onClick={addNewRow}
+                style={{ marginBottom: '10px' }}
+            >
+                <Icon name='plus' />
+                Add Design
             </Button>
-
             <div className="table-wrapper">
                 <Table celled className="dark-table">
                     <Table.Header>
                         <Table.Row>
-                            <Table.HeaderCell>Type</Table.HeaderCell>
-                            <Table.HeaderCell>Category</Table.HeaderCell>
-                            <Table.HeaderCell>Design Code</Table.HeaderCell>
-                            <Table.HeaderCell>Silver</Table.HeaderCell>
-                            <Table.HeaderCell>Edit</Table.HeaderCell>
-                            <Table.HeaderCell>Delete</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan="2">Type</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan="2">Category</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan="2">Design Code</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan="2">Silver</Table.HeaderCell>
+                            {[...Array(10)].map((_, index) => (
+                                <Table.HeaderCell key={index} colSpan="3">{`Stone ${index + 1}`}</Table.HeaderCell>
+                            ))}
+                            <Table.HeaderCell className="edit-column fixed-column">Edit</Table.HeaderCell>
+                            <Table.HeaderCell className="delete-column fixed-column">Delete</Table.HeaderCell>
+                        </Table.Row>
+                        <Table.Row>
+                            {[...Array(10)].map((_, index) => (
+                                <React.Fragment key={index}>
+                                    <Table.HeaderCell className="stone-column">Type</Table.HeaderCell>
+                                    <Table.HeaderCell className="stone-column">Size</Table.HeaderCell>
+                                    <Table.HeaderCell className="stone-column">Quantity</Table.HeaderCell>
+                                </React.Fragment>
+                            ))}
                         </Table.Row>
                     </Table.Header>
 
                     <Table.Body>
-                        {data.map((item, index) => (
-                            <Table.Row key={index}>
-                                <Table.Cell>
-                                    {editingRowIndex === index ? (
-                                        <Form.Input
-                                            value={item.type}
-                                            onChange={(e) => handleRowChange(index, 'type', e.target.value)}
-                                        />
-                                    ) : (
-                                        item.type
-                                    )}
+                        {data.map((item, rowIndex) => (
+                            <Table.Row key={rowIndex}>
+                                <Table.Cell data-label="Type">{item.type || ''}</Table.Cell>
+                                <Table.Cell data-label="Category">{item.cat_code || ''}</Table.Cell>
+                                <Table.Cell data-label="Design Code">
+                                    {`${item.design_id || ''}${item.set_id ? `-${item.set_id}` : ''}`}
                                 </Table.Cell>
-                                <Table.Cell>
-                                    {editingRowIndex === index ? (
-                                        <Form.Input
-                                            value={item.cat_code}
-                                            onChange={(e) => handleRowChange(index, 'cat_code', e.target.value)}
-                                        />
-                                    ) : (
-                                        item.cat_code
-                                    )}
+                                <Table.Cell data-label="Silver">{item.silver_quantity || ''}</Table.Cell>
+                                {item.stones_amnt.map((stone, stoneIndex) => (
+                                    <React.Fragment key={stoneIndex}>
+                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Type`} className="stone-column">
+                                            {stone.type || ''}
+                                        </Table.Cell>
+                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Size`} className="stone-column">
+                                            {stone.size || ''}
+                                        </Table.Cell>
+                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Quantity`} className="stone-column">
+                                            {stone.quantity || ''}
+                                        </Table.Cell>
+                                    </React.Fragment>
+                                ))}
+                                <Table.Cell className="edit-column fixed-column">
+                                    <Icon name='edit' onClick={() => setEditingRowIndex(rowIndex)} />
                                 </Table.Cell>
-                                <Table.Cell>
-                                    {editingRowIndex === index ? (
-                                        <Form.Input
-                                            value={item.design_id}
-                                            onChange={(e) => handleRowChange(index, 'design_id', e.target.value)}
-                                        />
-                                    ) : (
-                                        item.design_id
-                                    )}
-                                </Table.Cell>
-                                <Table.Cell>
-                                    {editingRowIndex === index ? (
-                                        <Form.Input
-                                            value={item.silver_quantity}
-                                            onChange={(e) => handleRowChange(index, 'silver_quantity', e.target.value)}
-                                        />
-                                    ) : (
-                                        item.silver_quantity
-                                    )}
-                                </Table.Cell>
-                                <Table.Cell>
-                                    {editingRowIndex === index ? (
-                                        <div>
-                                            <Button onClick={() => saveChanges(index)}>Save</Button>
-                                            <Button onClick={cancelEdit}>Cancel</Button>
-                                        </div>
-                                    ) : (
-                                        <Icon name='edit' onClick={() => setEditingRowIndex(index)} />
-                                    )}
-                                </Table.Cell>
-                                <Table.Cell>
+                                <Table.Cell className="delete-column">
                                     <Icon name='delete' onClick={() => handleDelete(item._id)} />
                                 </Table.Cell>
                             </Table.Row>
                         ))}
 
-                        {/* New row for adding a design */}
+                        {/* Row for adding a new design */}
                         {newRowData && (
                             <Table.Row>
                                 <Table.Cell>
@@ -185,6 +170,29 @@ const DesignRegisterTable = () => {
                                         onChange={(e) => handleNewRowChange('silver', e.target.value)}
                                     />
                                 </Table.Cell>
+
+                                {newRowData.stones.map((stone, stoneIndex) => (
+                                    <React.Fragment key={stoneIndex}>
+                                        <Table.Cell>
+                                            <Form.Input
+                                                value={stone.type}
+                                                onChange={(e) => handleNewStoneChange(stoneIndex, 'type', e.target.value)}
+                                            />
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <Form.Input
+                                                value={stone.size}
+                                                onChange={(e) => handleNewStoneChange(stoneIndex, 'size', e.target.value)}
+                                            />
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <Form.Input
+                                                value={stone.quantity}
+                                                onChange={(e) => handleNewStoneChange(stoneIndex, 'quantity', e.target.value)}
+                                            />
+                                        </Table.Cell>
+                                    </React.Fragment>
+                                ))}
                                 <Table.Cell>
                                     <Button onClick={saveNewRow}>Save</Button>
                                 </Table.Cell>
