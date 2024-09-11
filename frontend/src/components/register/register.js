@@ -13,9 +13,10 @@ const DesignRegisterTable = () => {
         silver: '',
         stones: [{ type: '', size: '', quantity: '', id: 1 }]
     });
-    const [editingRowIndex, setEditingRowIndex] = useState(null);
+    const [editingDesignId, setEditingDesignId] = useState(null);  // Use design _id instead of row index
     const connectionManager = new ConnectionManager();
 
+    // Fetch designs from the backend and populate the table
     const fetchDesigns = async () => {
         try {
             const response = await connectionManager.getAllDesigns();
@@ -33,6 +34,7 @@ const DesignRegisterTable = () => {
     const fillData = [...data];
     while (fillData.length < 3) {
         fillData.push({
+            _id: '', // Ensure there's a valid _id for each row
             cat_code: '',
             type: '',
             design_id: '',
@@ -52,19 +54,20 @@ const DesignRegisterTable = () => {
         { key: 'moonstone', value: 'Moonstone', text: 'Moonstone' }
     ];
 
-    const openModal = (index) => {
-        if (index !== undefined) {
-            setEditingRowIndex(index);
+    // Open modal for editing or adding a new design
+    const openModal = (design = null) => {
+        if (design) {
+            setEditingDesignId(design._id);  // Track the ID of the design being edited
             setNewDesign({
-                catCode: data[index].cat_code || '',
-                type: data[index].type || '',
-                designCode: data[index].design_id || '',
-                setCode: data[index].set_id || '',
-                silver: data[index].silver_quantity || '',
-                stones: data[index].stones_amnt || []
+                catCode: design.cat_code || '',
+                type: design.type || '',
+                designCode: design.design_id || '',
+                setCode: design.set_id || '',
+                silver: design.silver_quantity || '',
+                stones: design.stones_amnt || []
             });
         } else {
-            setEditingRowIndex(null);
+            setEditingDesignId(null);
             setNewDesign({
                 catCode: '',
                 type: '',
@@ -96,6 +99,7 @@ const DesignRegisterTable = () => {
         }
     };
 
+    // Save or update design based on whether editingDesignId is set
     const saveDesign = async () => {
         try {
             const designToSave = {
@@ -111,9 +115,11 @@ const DesignRegisterTable = () => {
                 silver_quantity: newDesign.silver
             };
 
-            if (editingRowIndex !== null) {
-                await connectionManager.updateDesign(data[editingRowIndex]._id, designToSave);
+            if (editingDesignId) {
+                // Edit existing design
+                await connectionManager.updateDesign(editingDesignId, designToSave);
             } else {
+                // Add new design
                 await connectionManager.addDesign(designToSave);
             }
 
@@ -124,14 +130,16 @@ const DesignRegisterTable = () => {
         }
     };
 
-    const handleEdit = (index) => {
-        openModal(index);
+    // Handle edit by passing design object
+    const handleEdit = (design) => {
+        openModal(design);
     };
 
+    // Correctly delete the design by using the proper ID
     const handleDelete = async (id) => {
         try {
             await connectionManager.deleteDesign(id);
-            setData(data.filter(item => item._id !== id));
+            setData(data.filter(item => item._id !== id)); // Remove deleted design from the table
         } catch (error) {
             console.error('Error deleting design', error);
         }
@@ -177,8 +185,8 @@ const DesignRegisterTable = () => {
                     </Table.Header>
 
                     <Table.Body>
-                        {fillData.map((item, rowIndex) => (
-                            <Table.Row key={rowIndex}>
+                        {fillData.map((item) => (
+                            <Table.Row key={item._id || item.design_id}>
                                 <Table.Cell data-label="Type">{item.type || ''}</Table.Cell>
                                 <Table.Cell data-label="Category">{item.cat_code || ''}</Table.Cell>
                                 <Table.Cell data-label="Design Code">{`${item.design_id || ''}-${item.set_id || ''}`}</Table.Cell>
@@ -197,7 +205,7 @@ const DesignRegisterTable = () => {
                                     </React.Fragment>
                                 ))}
                                 <Table.Cell className="edit-column fixed-column">
-                                    <Icon name='edit' onClick={() => handleEdit(rowIndex)} />
+                                    <Icon name='edit' onClick={() => handleEdit(item)} />
                                 </Table.Cell>
                                 <Table.Cell className="delete-column">
                                     <Icon name='delete' onClick={() => handleDelete(item._id)} />
@@ -209,7 +217,7 @@ const DesignRegisterTable = () => {
             </div>
 
             <Modal open={isModalOpen} onClose={closeModal}>
-                <Modal.Header>{editingRowIndex !== null ? 'Edit Design' : 'Add New Design'}</Modal.Header>
+                <Modal.Header>{editingDesignId !== null ? 'Edit Design' : 'Add New Design'}</Modal.Header>
                 <Modal.Content>
                     <Form>
                         <Form.Input
