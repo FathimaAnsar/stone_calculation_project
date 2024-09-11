@@ -162,16 +162,16 @@ const DesignRegisterTable = () => {
                                 <Table.Cell
                                     data-label="Category">{item.cat_code || ''}</Table.Cell> {/* Category cell */}
                                 <Table.Cell data-label="Design Code">
-                                    {${item.design_id || ''}-${item.set_id || ''}}
+                                    {`${item.design_id || ''}-${item.set_id || ''}`}
                                 </Table.Cell>
                                 <Table.Cell data-label="Silver">{item.silver_quantity || ''}</Table.Cell>
                                 {item.stones_amnt.map((stone, stoneIndex) => (
                                     <React.Fragment key={stoneIndex}>
-                                        <Table.Cell data-label={Stone ${stoneIndex + 1} Type}
+                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Type`}
                                                     className="stone-column">{stone.type || ''}</Table.Cell>
-                                        <Table.Cell data-label={Stone ${stoneIndex + 1} Size}
+                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Size`}
                                                     className="stone-column">{stone.size || ''}</Table.Cell>
-                                        <Table.Cell data-label={Stone ${stoneIndex + 1} Quantity}
+                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Quantity`}
                                                     className="stone-column">{stone.quantity || ''}</Table.Cell>
                                     </React.Fragment>
                                 ))}
@@ -235,12 +235,12 @@ const DesignRegisterTable = () => {
                                     closeOnChange={true} // Close dropdown on selection
                                 />
                                 <Form.Input
-                                    label={Stone ${index + 1} Size}
+                                    label={`Stone ${index + 1} Size`}
                                     value={stone.size}
                                     onChange={(e) => handleStonesChange(index, 'size', e.target.value)}
                                 />
                                 <Form.Input
-                                    label={Stone ${index + 1} Quantity}
+                                    label={`Stone ${index + 1} Quantity`}
                                     value={stone.quantity}
                                     onChange={(e) => handleStonesChange(index, 'quantity', e.target.value)}
                                 />
