@@ -7,7 +7,7 @@ const DesignRegisterTable = () => {
     const [data, setData] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newDesign, setNewDesign] = useState({
-        catCode: '',
+        catCode:'',
         type: '',
         designCode: '',
         setCode: '',
@@ -30,12 +30,10 @@ const DesignRegisterTable = () => {
     useEffect(() => {
         fetchDesigns();
     }, []);
-
-    // Ensure there are always 3 rows
     const fillData = [...data];
     while (fillData.length < 3) {
         fillData.push({
-            cat_code: '',
+            cat_code:'',
             type: '',
             design_id: '',
             set_id: '',
@@ -53,6 +51,13 @@ const DesignRegisterTable = () => {
         { key: 'sapphire', value: 'Sapphire', text: 'Sapphire' },
         { key: 'moonstone', value: 'Moonstone', text: 'Moonstone' }
     ];
+    // const designCodes = [
+    //     { key: 'FGCMSRS', value: 'FGCMSRS', text: 'FGCMSRS' },
+    //     { key: 'FGCMSPS', value: 'FGCMSPS', text: 'FGCMSPS' },
+    //     { key: 'FGCMSES', value: 'FGCMSES', text: 'FGCMSES' },
+    //     { key: 'CSR/P/E', value: 'CSR/P/E', text: 'CSR/P/E' },
+    //
+    // ];
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
@@ -79,7 +84,7 @@ const DesignRegisterTable = () => {
             const designToAdd = {
                 cat_code: newDesign.catCode,
                 design_id: newDesign.designCode,
-                set_id: newDesign.setCode,
+                set_id:newDesign.setCode,
                 type: newDesign.type,
                 stones_amnt: newDesign.stones.map(stone => ({
                     type: stone.type,
@@ -113,14 +118,14 @@ const DesignRegisterTable = () => {
 
     return (
         <Segment className="dark-segment">
-            <Header as="h1" textAlign="center" style={{ color: '#fff' }}>
+            <Header as="h1" textAlign="center" style={{color: '#fff'}}>
                 Design Register
             </Header>
             <Button
                 icon
                 labelPosition='left'
                 onClick={openModal}
-                style={{ marginBottom: '10px' }}
+                style={{marginBottom: '10px'}}
             >
                 <Icon name='plus'/>
                 Add Design
@@ -130,11 +135,11 @@ const DesignRegisterTable = () => {
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell rowSpan="2">Type</Table.HeaderCell>
-                            <Table.HeaderCell rowSpan="2">Category</Table.HeaderCell>
+                            <Table.HeaderCell rowSpan="2">Category</Table.HeaderCell> {/* Added Category column */}
                             <Table.HeaderCell rowSpan="2">Design Code</Table.HeaderCell>
                             <Table.HeaderCell rowSpan="2">Silver</Table.HeaderCell>
                             {[...Array(10)].map((_, index) => (
-                                <Table.HeaderCell key={index} colSpan="3">Stone {index + 1}</Table.HeaderCell>
+                                <Table.HeaderCell key={index} colSpan="3">{Stone ${index + 1}}</Table.HeaderCell>
                             ))}
                             <Table.HeaderCell className="edit-column fixed-column">Edit</Table.HeaderCell>
                             <Table.HeaderCell className="delete-column fixed-column">Delete</Table.HeaderCell>
@@ -154,29 +159,34 @@ const DesignRegisterTable = () => {
                         {fillData.map((item, rowIndex) => (
                             <Table.Row key={rowIndex}>
                                 <Table.Cell data-label="Type">{item.type || ''}</Table.Cell>
-                                <Table.Cell data-label="Category">{item.cat_code || ''}</Table.Cell>
+                                <Table.Cell
+                                    data-label="Category">{item.cat_code || ''}</Table.Cell> {/* Category cell */}
                                 <Table.Cell data-label="Design Code">
-                                    {`${item.design_id || ''}-${item.set_id || ''}`}
+                                    {${item.design_id || ''}-${item.set_id || ''}}
                                 </Table.Cell>
                                 <Table.Cell data-label="Silver">{item.silver_quantity || ''}</Table.Cell>
                                 {item.stones_amnt.map((stone, stoneIndex) => (
                                     <React.Fragment key={stoneIndex}>
-                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Type`} className="stone-column">{stone.type || ''}</Table.Cell>
-                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Size`} className="stone-column">{stone.size || ''}</Table.Cell>
-                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Quantity`} className="stone-column">{stone.quantity || ''}</Table.Cell>
+                                        <Table.Cell data-label={Stone ${stoneIndex + 1} Type}
+                                                    className="stone-column">{stone.type || ''}</Table.Cell>
+                                        <Table.Cell data-label={Stone ${stoneIndex + 1} Size}
+                                                    className="stone-column">{stone.size || ''}</Table.Cell>
+                                        <Table.Cell data-label={Stone ${stoneIndex + 1} Quantity}
+                                                    className="stone-column">{stone.quantity || ''}</Table.Cell>
                                     </React.Fragment>
                                 ))}
                                 <Table.Cell className="edit-column fixed-column">
-                                    <Icon name='edit' onClick={() => handleEdit(rowIndex)} />
+                                    <Icon name='edit' onClick={() => handleEdit(rowIndex)}/>
                                 </Table.Cell>
                                 <Table.Cell className="delete-column">
-                                    <Icon name='delete' onClick={() => handleDelete(item._id)} />
+                                    <Icon name='delete' onClick={() => handleDelete(item._id)}/>
                                 </Table.Cell>
                             </Table.Row>
                         ))}
                     </Table.Body>
                 </Table>
             </div>
+
 
             <Modal open={isModalOpen} onClose={closeModal}>
                 <Modal.Header>Add New Design</Modal.Header>
@@ -215,22 +225,22 @@ const DesignRegisterTable = () => {
                         {newDesign.stones.map((stone, index) => (
                             <div key={index}>
                                 <Dropdown
-                                    placeholder="Select Stone"
+                                    placeholder="Select Stones"
                                     fluid
                                     search
                                     selection
                                     options={stonesOptions}
                                     value={stone.type}
-                                    onChange={(e, { value }) => handleStonesChange(index, 'type', value)}
+                                    onChange={(e, {value}) => handleStonesChange(index, 'type', value)}
                                     closeOnChange={true} // Close dropdown on selection
                                 />
                                 <Form.Input
-                                    label={`Stone ${index + 1} Size`}
+                                    label={Stone ${index + 1} Size}
                                     value={stone.size}
                                     onChange={(e) => handleStonesChange(index, 'size', e.target.value)}
                                 />
                                 <Form.Input
-                                    label={`Stone ${index + 1} Quantity`}
+                                    label={Stone ${index + 1} Quantity}
                                     value={stone.quantity}
                                     onChange={(e) => handleStonesChange(index, 'quantity', e.target.value)}
                                 />
@@ -238,7 +248,7 @@ const DesignRegisterTable = () => {
                         ))}
                         {newDesign.stones.length < 10 && (
                             <Button type='button' onClick={addStoneField} icon>
-                                <Icon name='plus' /> Add Stone
+                                <Icon name='plus'/> Add Stone
                             </Button>
                         )}
                         <Button type='submit' onClick={addDesign}>Submit</Button>
