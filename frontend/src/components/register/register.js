@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Segment, Header, Button, Icon, Table, Modal, Form, Dropdown } from 'semantic-ui-react';
 import ConnectionManager from '../connections'; // Ensure you import your ConnectionManager
 import './register.css'
+
 const DesignRegisterTable = () => {
     const [data, setData] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -52,6 +53,20 @@ const DesignRegisterTable = () => {
         { key: 'moonstone', value: 'Moonstone', text: 'Moonstone' }
     ];
 
+    const typeOptions = [
+        { key: 'set', value: 'Set', text: 'Set' },
+        { key: 'ring', value: 'Ring', text: 'Ring' },
+        { key: 'pendant', value: 'Pendant', text: 'Pendant' },
+        { key: 'earring', value: 'Earring', text: 'Earring' }
+    ];
+
+    const designCodes = {
+        Set: 'CSR/P/E',
+        Ring: 'FGCMSRS',
+        Pendant: 'FGCMSPS',
+        Earring: 'FGCMSES'
+    };
+
     const openModal = (index) => {
         if (index !== undefined) {
             setEditingRowIndex(index);
@@ -81,6 +96,14 @@ const DesignRegisterTable = () => {
 
     const handleInputChange = (e, { name, value }) => {
         setNewDesign({ ...newDesign, [name]: value });
+    };
+
+    const handleTypeChange = (e, { value }) => {
+        setNewDesign({
+            ...newDesign,
+            type: value,
+            designCode: designCodes[value] || ''
+        });
     };
 
     const handleStonesChange = (index, field, value) => {
@@ -136,7 +159,6 @@ const DesignRegisterTable = () => {
             console.error('Error deleting design', error);
         }
     };
-
 
     return (
         <Segment className="dark-segment">
@@ -206,7 +228,7 @@ const DesignRegisterTable = () => {
                                         <Icon name='edit' onClick={() => handleEdit(rowIndex)}/>
                                     </Table.Cell>
                                     <Table.Cell className="delete-column">
-                                        <Icon name='delete' onClick={() => handleDelete(item._id)}/>
+                                        <Icon name='delete' onClick={() => handleDelete(item._id)} />
                                     </Table.Cell>
                                 </Table.Row>
                             ))}
@@ -215,78 +237,104 @@ const DesignRegisterTable = () => {
                 </div>
             </div>
 
-            <Modal open={isModalOpen} onClose={closeModal}>
-                <Modal.Header>{editingRowIndex !== null ? 'Edit Design' : 'Add New Design'}</Modal.Header>
+            <Modal open={isModalOpen} onClose={closeModal} size='large'>
+                <Modal.Header>
+                    {editingRowIndex !== null ? 'Edit Design' : 'Add Design'}
+                </Modal.Header>
                 <Modal.Content>
                     <Form>
-                        <Form.Input
-                            label='Category Code'
-                            name='catCode'
-                            value={newDesign.catCode}
-                            onChange={handleInputChange}
-                        />
-                        <Form.Input
-                            label='Type'
-                            name='type'
-                            value={newDesign.type}
-                            onChange={handleInputChange}
-                            required
-                        />
-                        <Form.Input
-                            label='Design Code'
-                            name='designCode'
-                            value={newDesign.designCode}
-                            onChange={handleInputChange}
-                        />
-                        <Form.Input
-                            label='Set Code'
-                            name='setCode'
-                            value={newDesign.setCode}
-                            onChange={handleInputChange}
-                        />
-                        <Form.Input
-                            label='Silver Quantity'
-                            name='silver'
-                            value={newDesign.silver}
-                            onChange={handleInputChange}
-                        />
-
+                        <Form.Field>
+                            <label>Category Code</label>
+                            <input
+                                name="catCode"
+                                value={newDesign.catCode}
+                                onChange={(e) => handleInputChange(e, { name: 'catCode', value: e.target.value })}
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Type</label>
+                            <Dropdown
+                                selection
+                                options={typeOptions}
+                                value={newDesign.type}
+                                onChange={handleTypeChange}
+                                placeholder='Select Type'
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Design Code</label>
+                            <input
+                                name="designCode"
+                                value={newDesign.designCode}
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Set Code</label>
+                            <input
+                                name="setCode"
+                                value={newDesign.setCode}
+                                placeholder={"001"}
+                                onChange={(e) => handleInputChange(e, { name: 'setCode', value: e.target.value })}
+                            />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Silver</label>
+                            <input
+                                name="silver"
+                                value={newDesign.silver}
+                                onChange={(e) => handleInputChange(e, { name: 'silver', value: e.target.value })}
+                            />
+                        </Form.Field>
+                        <Header as='h3'>Stones</Header>
                         {newDesign.stones.map((stone, index) => (
-                            <Segment key={index}>
-                                <Form.Group widths='equal'>
-                                    <Form.Dropdown
-                                        label={`Stone ${index + 1} Type`}
-                                        placeholder='Select Stone Type'
-                                        name='type'
+                            <Form.Group key={index}>
+                                <Form.Field>
+                                    <label>Type</label>
+                                    <Dropdown
+                                        selection
+                                        options={stonesOptions}
                                         value={stone.type}
                                         onChange={(e, { value }) => handleStonesChange(index, 'type', value)}
-                                        options={stonesOptions}
+                                        placeholder='Select Stone Type'
                                     />
-                                    <Form.Input
-                                        label='Size'
-                                        name='size'
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Size</label>
+                                    <input
                                         value={stone.size}
-                                        onChange={(e, { value }) => handleStonesChange(index, 'size', value)}
+                                        onChange={(e) => handleStonesChange(index, 'size', e.target.value)}
                                     />
-                                    <Form.Input
-                                        label='Quantity'
-                                        name='quantity'
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Quantity</label>
+                                    <input
+                                        type="number"
                                         value={stone.quantity}
-                                        onChange={(e, { value }) => handleStonesChange(index, 'quantity', value)}
+                                        onChange={(e) => handleStonesChange(index, 'quantity', e.target.value)}
                                     />
-                                </Form.Group>
-                            </Segment>
+                                </Form.Field>
+                            </Form.Group>
                         ))}
-                        <Button onClick={addStoneField} style={{ marginTop: '10px' }}>
-                            <Icon name='plus' /> Add Stone
+                        <Button
+                            type='button'
+                            icon
+                            labelPosition='left'
+                            onClick={addStoneField}
+                            style={{ marginBottom: '10px' }}
+                        >
+                            <Icon name='plus' />
+                            Add Stone
                         </Button>
                     </Form>
                 </Modal.Content>
                 <Modal.Actions>
-                    <Button onClick={saveDesign} primary>
+                    <Button onClick={closeModal}>Cancel</Button>
+                    <Button
+                        onClick={saveDesign}
+                        primary
+                    >
                         Save
                     </Button>
-                    <Button onClick={closeModal}>Cancel</Button>
                 </Modal.Actions>
             </Modal>
         </Segment>
