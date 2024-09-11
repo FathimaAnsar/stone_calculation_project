@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Segment, Header, Button, Icon, Table, Modal, Form, Dropdown } from 'semantic-ui-react';
 import ConnectionManager from '../connections'; // Ensure you import your ConnectionManager
-
+import './register.css'
 const DesignRegisterTable = () => {
     const [data, setData] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -137,6 +137,7 @@ const DesignRegisterTable = () => {
         }
     };
 
+
     return (
         <Segment className="dark-segment">
             <Header as="h1" textAlign="center" style={{ color: '#fff' }}>
@@ -152,60 +153,66 @@ const DesignRegisterTable = () => {
                 Add Design
             </Button>
             <div className="table-wrapper">
-                <Table celled className="dark-table">
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell rowSpan="2">Type</Table.HeaderCell>
-                            <Table.HeaderCell rowSpan="2">Category</Table.HeaderCell> {/* Added Category column */}
-                            <Table.HeaderCell rowSpan="2">Design Code</Table.HeaderCell>
-                            <Table.HeaderCell rowSpan="2">Silver</Table.HeaderCell>
-                            {[...Array(10)].map((_, index) => (
-                                <Table.HeaderCell key={index} colSpan="3">{`Stone ${index + 1}`}</Table.HeaderCell>
-                            ))}
-                            <Table.HeaderCell className="edit-column fixed-column">Edit</Table.HeaderCell>
-                            <Table.HeaderCell className="delete-column fixed-column">Delete</Table.HeaderCell>
-                        </Table.Row>
-                        <Table.Row>
-                            {[...Array(10)].map((_, index) => (
-                                <React.Fragment key={index}>
-                                    <Table.HeaderCell className="stone-column">Type</Table.HeaderCell>
-                                    <Table.HeaderCell className="stone-column">Size</Table.HeaderCell>
-                                    <Table.HeaderCell className="stone-column">Quantity</Table.HeaderCell>
-                                </React.Fragment>
-                            ))}
-                        </Table.Row>
-                    </Table.Header>
-
-                    <Table.Body>
-                        {fillData.map((item, rowIndex) => (
-                            <Table.Row key={rowIndex}>
-                                <Table.Cell data-label="Type">{item.type || ''}</Table.Cell>
-                                <Table.Cell data-label="Category">{item.cat_code || ''}</Table.Cell>
-                                <Table.Cell data-label="Design Code">{`${item.design_id || ''}-${item.set_id || ''}`}</Table.Cell>
-                                <Table.Cell data-label="Silver">{item.silver_quantity || ''}</Table.Cell>
-                                {item.stones_amnt.map((stone, stoneIndex) => (
-                                    <React.Fragment key={stoneIndex}>
-                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Type`} className="stone-column">
-                                            {stone.type || ''}
-                                        </Table.Cell>
-                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Size`} className="stone-column">
-                                            {stone.size || ''}
-                                        </Table.Cell>
-                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Quantity`} className="stone-column">
-                                            {stone.quantity || ''}
-                                        </Table.Cell>
+                <div className="table-scrollable">
+                    <Table celled className="dark-table">
+                        <Table.Header>
+                            <Table.Row>
+                                <Table.HeaderCell rowSpan="2">Type</Table.HeaderCell>
+                                <Table.HeaderCell rowSpan="2">Category</Table.HeaderCell> {/* Added Category column */}
+                                <Table.HeaderCell rowSpan="2">Design Code</Table.HeaderCell>
+                                <Table.HeaderCell rowSpan="2">Silver</Table.HeaderCell>
+                                {[...Array(10)].map((_, index) => (
+                                    <Table.HeaderCell key={index} colSpan="3">{`Stone ${index + 1}`}</Table.HeaderCell>
+                                ))}
+                                <Table.HeaderCell className="edit-column fixed-column">Edit</Table.HeaderCell>
+                                <Table.HeaderCell className="delete-column fixed-column">Delete</Table.HeaderCell>
+                            </Table.Row>
+                            <Table.Row>
+                                {[...Array(10)].map((_, index) => (
+                                    <React.Fragment key={index}>
+                                        <Table.HeaderCell className="stone-column">Type</Table.HeaderCell>
+                                        <Table.HeaderCell className="stone-column">Size</Table.HeaderCell>
+                                        <Table.HeaderCell className="stone-column">Quantity</Table.HeaderCell>
                                     </React.Fragment>
                                 ))}
-                                <Table.Cell className="edit-column fixed-column">
-                                    <Icon name='edit' onClick={() => handleEdit(rowIndex)} />
-                                </Table.Cell>
-                                <Table.Cell className="delete-column">
-                                    <Icon name='delete' onClick={() => handleDelete(item._id)} />
-                                </Table.Cell>
                             </Table.Row>
-                        ))}
-                    </Table.Body>
-                </Table>
+                        </Table.Header>
+
+                        <Table.Body>
+                            {fillData.map((item, rowIndex) => (
+                                <Table.Row key={rowIndex}>
+                                    <Table.Cell data-label="Type">{item.type || ''}</Table.Cell>
+                                    <Table.Cell data-label="Category">{item.cat_code || ''}</Table.Cell>
+                                    <Table.Cell
+                                        data-label="Design Code">{`${item.design_id || ''}-${item.set_id || ''}`}</Table.Cell>
+                                    <Table.Cell data-label="Silver">{item.silver_quantity || ''}</Table.Cell>
+                                    {item.stones_amnt.map((stone, stoneIndex) => (
+                                        <React.Fragment key={stoneIndex}>
+                                            <Table.Cell data-label={`Stone ${stoneIndex + 1} Type`}
+                                                        className="stone-column">
+                                                {stone.type || ''}
+                                            </Table.Cell>
+                                            <Table.Cell data-label={`Stone ${stoneIndex + 1} Size`}
+                                                        className="stone-column">
+                                                {stone.size || ''}
+                                            </Table.Cell>
+                                            <Table.Cell data-label={`Stone ${stoneIndex + 1} Quantity`}
+                                                        className="stone-column">
+                                                {stone.quantity || ''}
+                                            </Table.Cell>
+                                        </React.Fragment>
+                                    ))}
+                                    <Table.Cell className="edit-column fixed-column">
+                                        <Icon name='edit' onClick={() => handleEdit(rowIndex)}/>
+                                    </Table.Cell>
+                                    <Table.Cell className="delete-column">
+                                        <Icon name='delete' onClick={() => handleDelete(item._id)}/>
+                                    </Table.Cell>
+                                </Table.Row>
+                            ))}
+                        </Table.Body>
+                    </Table>
+                </div>
             </div>
 
             <Modal open={isModalOpen} onClose={closeModal}>
