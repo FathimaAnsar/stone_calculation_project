@@ -33,11 +33,22 @@ class ConnectionManager {
 
     async sendRequest(method, apiEndPoint, data = null) {
         try {
-            const response = await this.axiosInstance({
+            // Prepare the config object
+            const config = {
                 method,
                 url: apiEndPoint,
-                data
-            });
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                withCredentials: true // Ensure cookies/credentials are included in requests
+            };
+
+            // Add data if it's not a DELETE request
+            if (method.toLowerCase() !== 'delete') {
+                config.data = data;
+            }
+
+            const response = await this.axiosInstance(config);
             return response.data;
         } catch (error) {
             console.error(`Error during ${method.toUpperCase()} request:`, error?.response?.data || error.message);
