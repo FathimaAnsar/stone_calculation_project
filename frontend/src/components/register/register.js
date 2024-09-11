@@ -160,7 +160,7 @@ const DesignRegisterTable = () => {
                             <Table.HeaderCell rowSpan="2">Design Code</Table.HeaderCell>
                             <Table.HeaderCell rowSpan="2">Silver</Table.HeaderCell>
                             {[...Array(10)].map((_, index) => (
-                                <Table.HeaderCell key={index} colSpan="3">{Stone ${index + 1}}</Table.HeaderCell>
+                                <Table.HeaderCell key={index} colSpan="3">{`Stone ${index + 1}`}</Table.HeaderCell>
                             ))}
                             <Table.HeaderCell className="edit-column fixed-column">Edit</Table.HeaderCell>
                             <Table.HeaderCell className="delete-column fixed-column">Delete</Table.HeaderCell>
@@ -181,17 +181,17 @@ const DesignRegisterTable = () => {
                             <Table.Row key={rowIndex}>
                                 <Table.Cell data-label="Type">{item.type || ''}</Table.Cell>
                                 <Table.Cell data-label="Category">{item.cat_code || ''}</Table.Cell>
-                                <Table.Cell data-label="Design Code">{${item.design_id || ''}-${item.set_id || ''}}</Table.Cell>
+                                <Table.Cell data-label="Design Code">{`${item.design_id || ''}-${item.set_id || ''}`}</Table.Cell>
                                 <Table.Cell data-label="Silver">{item.silver_quantity || ''}</Table.Cell>
                                 {item.stones_amnt.map((stone, stoneIndex) => (
                                     <React.Fragment key={stoneIndex}>
-                                        <Table.Cell data-label={Stone ${stoneIndex + 1} Type} className="stone-column">
+                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Type`} className="stone-column">
                                             {stone.type || ''}
                                         </Table.Cell>
-                                        <Table.Cell data-label={Stone ${stoneIndex + 1} Size} className="stone-column">
+                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Size`} className="stone-column">
                                             {stone.size || ''}
                                         </Table.Cell>
-                                        <Table.Cell data-label={Stone ${stoneIndex + 1} Quantity} className="stone-column">
+                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Quantity`} className="stone-column">
                                             {stone.quantity || ''}
                                         </Table.Cell>
                                     </React.Fragment>
@@ -240,7 +240,7 @@ const DesignRegisterTable = () => {
                             <Segment key={index}>
                                 <Form.Group widths='equal'>
                                     <Form.Dropdown
-                                        label={Stone ${index + 1} Type}
+                                        label={`Stone ${index + 1} Type`}
                                         placeholder='Select Stone Type'
                                         name='type'
                                         value={stone.type}
