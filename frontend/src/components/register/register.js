@@ -139,7 +139,9 @@ const DesignRegisterTable = () => {
                             <Table.HeaderCell rowSpan="2">Design Code</Table.HeaderCell>
                             <Table.HeaderCell rowSpan="2">Silver</Table.HeaderCell>
                             {[...Array(10)].map((_, index) => (
-                                <Table.HeaderCell key={index} colSpan="3">{Stone ${index + 1}}</Table.HeaderCell>
+                                <Table.HeaderCell key={index} colSpan="3">
+                                    {`Stone ${index + 1}`}
+                                </Table.HeaderCell>
                             ))}
                             <Table.HeaderCell className="edit-column fixed-column">Edit</Table.HeaderCell>
                             <Table.HeaderCell className="delete-column fixed-column">Delete</Table.HeaderCell>
