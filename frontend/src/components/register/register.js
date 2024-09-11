@@ -244,12 +244,12 @@ const DesignRegisterTable = () => {
                             onChange={handleInputChange}
                         />
 
-                        <Form.Field>
-                            <label>Stones</label>
-                            {newDesign.stones.map((stone, index) => (
-                                <Segment key={index} className="stone-segment">
-                                    <Form.Select
-                                        label='Type'
+                        {newDesign.stones.map((stone, index) => (
+                            <Segment key={index}>
+                                <Form.Group widths='equal'>
+                                    <Form.Dropdown
+                                        label={`Stone ${index + 1} Type`}
+                                        placeholder='Select Stone Type'
                                         name='type'
                                         value={stone.type}
                                         onChange={(e, { value }) => handleStonesChange(index, 'type', value)}
@@ -259,33 +259,27 @@ const DesignRegisterTable = () => {
                                         label='Size'
                                         name='size'
                                         value={stone.size}
-                                        onChange={(e) => handleStonesChange(index, 'size', e.target.value)}
+                                        onChange={(e, { value }) => handleStonesChange(index, 'size', value)}
                                     />
                                     <Form.Input
                                         label='Quantity'
                                         name='quantity'
                                         value={stone.quantity}
-                                        onChange={(e) => handleStonesChange(index, 'quantity', e.target.value)}
+                                        onChange={(e, { value }) => handleStonesChange(index, 'quantity', value)}
                                     />
-                                    <Button
-                                        icon
-                                        labelPosition='left'
-                                        onClick={addStoneField}
-                                        disabled={newDesign.stones.length >= 10}
-                                    >
-                                        <Icon name='plus' />
-                                        Add Stone
-                                    </Button>
-                                </Segment>
-                            ))}
-                        </Form.Field>
+                                </Form.Group>
+                            </Segment>
+                        ))}
+                        <Button onClick={addStoneField} style={{ marginTop: '10px' }}>
+                            <Icon name='plus' /> Add Stone
+                        </Button>
                     </Form>
                 </Modal.Content>
                 <Modal.Actions>
-                    <Button onClick={closeModal}>Cancel</Button>
-                    <Button primary onClick={saveDesign}>
+                    <Button onClick={saveDesign} primary>
                         Save
                     </Button>
+                    <Button onClick={closeModal}>Cancel</Button>
                 </Modal.Actions>
             </Modal>
         </Segment>
