@@ -7,7 +7,7 @@ const DesignRegisterTable = () => {
     const [data, setData] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newDesign, setNewDesign] = useState({
-        catCode:'',
+        catCode: '',
         type: '',
         designCode: '',
         setCode: '',
@@ -31,42 +31,31 @@ const DesignRegisterTable = () => {
         fetchDesigns();
     }, []);
 
-    useEffect(() => {
-        if (editingRowIndex !== null) {
-            const selectedDesign = data[editingRowIndex];
-            setNewDesign({
-                catCode: selectedDesign.cat_code || '',
-                type: selectedDesign.type || '',
-                designCode: selectedDesign.design_id || '',
-                setCode: selectedDesign.set_id || '',
-                silver: selectedDesign.silver_quantity || '',
-                stones: selectedDesign.stones_amnt.map((stone, i) => ({
-                    type: stone.type || '',
-                    size: stone.size || '',
-                    quantity: stone.quantity || '',
-                    id: i + 1
-                }))
-            });
-        }
-    }, [editingRowIndex]); // Update when editingRowIndex changes
-
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setEditingRowIndex(null); // Reset the index to indicate adding mode
-        // Reset the form when closing the modal
-        setNewDesign({
-            catCode:'',
+    // Ensure there are always 3 rows
+    const fillData = [...data];
+    while (fillData.length < 3) {
+        fillData.push({
+            cat_code: '',
             type: '',
-            designCode: '',
-            setCode: '',
-            silver: '',
-            stones: [{ type: '', size: '', quantity: '', id: 1 }]
+            design_id: '',
+            set_id: '',
+            silver_quantity: '',
+            stones_amnt: Array(10).fill({ type: '', size: '', quantity: '' })
         });
-    };
+    }
+
+    const stonesOptions = [
+        { key: 'blue-topaz', value: 'Blue Topaz', text: 'Blue Topaz' },
+        { key: 'white-topaz', value: 'White Topaz', text: 'White Topaz' },
+        { key: 'chrome-diopside', value: 'Chrome Diopside', text: 'Chrome Diopside' },
+        { key: 'garnet', value: 'Garnet', text: 'Garnet' },
+        { key: 'peridot', value: 'Peridot', text: 'Peridot' },
+        { key: 'sapphire', value: 'Sapphire', text: 'Sapphire' },
+        { key: 'moonstone', value: 'Moonstone', text: 'Moonstone' }
+    ];
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
     const handleInputChange = (e, { name, value }) => {
         setNewDesign({ ...newDesign, [name]: value });
@@ -85,9 +74,9 @@ const DesignRegisterTable = () => {
         }
     };
 
-    const addOrUpdateDesign = async () => {
+    const addDesign = async () => {
         try {
-            const designToSave = {
+            const designToAdd = {
                 cat_code: newDesign.catCode,
                 design_id: newDesign.designCode,
                 set_id: newDesign.setCode,
@@ -100,24 +89,17 @@ const DesignRegisterTable = () => {
                 silver_quantity: newDesign.silver
             };
 
-            if (editingRowIndex !== null) {
-                // Update existing design
-                await connectionManager.updateDesign(data[editingRowIndex]._id, designToSave);
-            } else {
-                // Add new design
-                await connectionManager.addDesign(designToSave);
-            }
-
-            fetchDesigns(); // Reload data from the database after adding or editing a design
+            await connectionManager.addDesign(designToAdd);
+            fetchDesigns(); // Reload data from the database after adding a design
             closeModal();
         } catch (error) {
-            console.error('Error adding/updating design', error);
+            console.error('Error adding design', error);
         }
     };
 
     const handleEdit = (index) => {
-        setEditingRowIndex(index); // Set the editing row index
-        openModal(); // Open the modal
+        setEditingRowIndex(index);
+        // Implement edit logic
     };
 
     const handleDelete = async (id) => {
@@ -131,14 +113,14 @@ const DesignRegisterTable = () => {
 
     return (
         <Segment className="dark-segment">
-            <Header as="h1" textAlign="center" style={{color: '#fff'}}>
+            <Header as="h1" textAlign="center" style={{ color: '#fff' }}>
                 Design Register
             </Header>
             <Button
                 icon
                 labelPosition='left'
                 onClick={openModal}
-                style={{marginBottom: '10px'}}
+                style={{ marginBottom: '10px' }}
             >
                 <Icon name='plus'/>
                 Add Design
@@ -152,7 +134,7 @@ const DesignRegisterTable = () => {
                             <Table.HeaderCell rowSpan="2">Design Code</Table.HeaderCell>
                             <Table.HeaderCell rowSpan="2">Silver</Table.HeaderCell>
                             {[...Array(10)].map((_, index) => (
-                                <Table.HeaderCell key={index} colSpan="3">{`Stone ${index + 1}`}</Table.HeaderCell>
+                                <Table.HeaderCell key={index} colSpan="3">Stone {index + 1}</Table.HeaderCell>
                             ))}
                             <Table.HeaderCell className="edit-column fixed-column">Edit</Table.HeaderCell>
                             <Table.HeaderCell className="delete-column fixed-column">Delete</Table.HeaderCell>
@@ -169,7 +151,7 @@ const DesignRegisterTable = () => {
                     </Table.Header>
 
                     <Table.Body>
-                        {data.map((item, rowIndex) => (
+                        {fillData.map((item, rowIndex) => (
                             <Table.Row key={rowIndex}>
                                 <Table.Cell data-label="Type">{item.type || ''}</Table.Cell>
                                 <Table.Cell data-label="Category">{item.cat_code || ''}</Table.Cell>
@@ -179,22 +161,16 @@ const DesignRegisterTable = () => {
                                 <Table.Cell data-label="Silver">{item.silver_quantity || ''}</Table.Cell>
                                 {item.stones_amnt.map((stone, stoneIndex) => (
                                     <React.Fragment key={stoneIndex}>
-                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Type`} className="stone-column">
-                                            {stone.type || ''}
-                                        </Table.Cell>
-                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Size`} className="stone-column">
-                                            {stone.size || ''}
-                                        </Table.Cell>
-                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Quantity`} className="stone-column">
-                                            {stone.quantity || ''}
-                                        </Table.Cell>
+                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Type`} className="stone-column">{stone.type || ''}</Table.Cell>
+                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Size`} className="stone-column">{stone.size || ''}</Table.Cell>
+                                        <Table.Cell data-label={`Stone ${stoneIndex + 1} Quantity`} className="stone-column">{stone.quantity || ''}</Table.Cell>
                                     </React.Fragment>
                                 ))}
                                 <Table.Cell className="edit-column fixed-column">
-                                    <Icon name='edit' onClick={() => handleEdit(rowIndex)}/>
+                                    <Icon name='edit' onClick={() => handleEdit(rowIndex)} />
                                 </Table.Cell>
                                 <Table.Cell className="delete-column">
-                                    <Icon name='delete' onClick={() => handleDelete(item._id)}/>
+                                    <Icon name='delete' onClick={() => handleDelete(item._id)} />
                                 </Table.Cell>
                             </Table.Row>
                         ))}
@@ -203,7 +179,7 @@ const DesignRegisterTable = () => {
             </div>
 
             <Modal open={isModalOpen} onClose={closeModal}>
-                <Modal.Header>{editingRowIndex !== null ? 'Edit Design' : 'Add New Design'}</Modal.Header>
+                <Modal.Header>Add New Design</Modal.Header>
                 <Modal.Content>
                     <Form>
                         <Form.Input
@@ -239,14 +215,14 @@ const DesignRegisterTable = () => {
                         {newDesign.stones.map((stone, index) => (
                             <div key={index}>
                                 <Dropdown
-                                    placeholder="Select Stones"
+                                    placeholder="Select Stone"
                                     fluid
                                     search
                                     selection
                                     options={stonesOptions}
                                     value={stone.type}
-                                    onChange={(e, {value}) => handleStonesChange(index, 'type', value)}
-                                    closeOnChange={true}
+                                    onChange={(e, { value }) => handleStonesChange(index, 'type', value)}
+                                    closeOnChange={true} // Close dropdown on selection
                                 />
                                 <Form.Input
                                     label={`Stone ${index + 1} Size`}
@@ -262,12 +238,10 @@ const DesignRegisterTable = () => {
                         ))}
                         {newDesign.stones.length < 10 && (
                             <Button type='button' onClick={addStoneField} icon>
-                                <Icon name='plus'/> Add Stone
+                                <Icon name='plus' /> Add Stone
                             </Button>
                         )}
-                        <Button type='submit' onClick={addOrUpdateDesign}>
-                            {editingRowIndex !== null ? 'Update Design' : 'Submit'}
-                        </Button>
+                        <Button type='submit' onClick={addDesign}>Submit</Button>
                     </Form>
                 </Modal.Content>
             </Modal>
