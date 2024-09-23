@@ -20,7 +20,11 @@ const DesignRegisterTable = () => {
     const fetchDesigns = async () => {
         try {
             const response = await connectionManager.getAllDesigns();
-            const sortedData = response.sort((a, b) => a.design_id.localeCompare(b.design_id));
+            const sortedData = response.sort((a, b) => {
+                const setA = parseInt(a.set_id, 10) || 0;
+                const setB = parseInt(b.set_id, 10) || 0;
+                return setA - setB;
+            });
             setData(sortedData || []);
         } catch (error) {
             console.error('Error fetching data', error);
@@ -54,14 +58,12 @@ const DesignRegisterTable = () => {
     ];
 
     const typeOptions = [
-        { key: 'set', value: 'Set', text: 'Set' },
         { key: 'ring', value: 'Ring', text: 'Ring' },
         { key: 'pendant', value: 'Pendant', text: 'Pendant' },
         { key: 'earring', value: 'Earring', text: 'Earring' }
     ];
 
     const designCodes = {
-        Set: 'CSR/P/E',
         Ring: 'FGCMSRS',
         Pendant: 'FGCMSPS',
         Earring: 'FGCMSES'
